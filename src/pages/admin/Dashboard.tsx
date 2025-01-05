@@ -7,6 +7,8 @@ import EventManagement from './EventManagement';
 import ProjectManagement from './ProjectManagement';
 import ContactManagement from './ContactManagement';
 import BannerManagement from './BannerManagement';
+import logoDSC from '../../assets/LogoDSC.png';
+
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -88,22 +90,24 @@ const AdminDashboard = () => {
 
   return (
     <Layout className="min-h-screen">
-      <Header className="flex items-center justify-between px-6 bg-white">
+      <Header className="flex items-center justify-between px-6 bg-[#000B3C]">
         <div className="flex items-center">
           <img 
-            src="/logo.png" 
+            src={logoDSC} 
             alt="DSC UTE Logo" 
-            className="h-8 mr-4"
+            className="h-16 m-auto mr-4"
           />
-          <Title level={4} className="m-0">
+          <Title level={4} className="m-0 text-white !text-white">
             DSC UTE Admin
           </Title>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-gray-600">
+          <span className="text-white">
             Xin chào, {user?.username}
           </span>
           <Button 
+            type="text"
+            className="text-white hover:text-gray-200"
             icon={<LogoutOutlined />}
             onClick={handleLogout}
           >

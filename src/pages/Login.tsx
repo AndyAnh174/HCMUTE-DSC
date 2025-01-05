@@ -3,7 +3,7 @@ import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.tsx';
-
+import bannerDSC from '../assets/banner1.png';
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -44,9 +44,9 @@ const Login = () => {
       <div className="w-full max-w-md p-8">
         <div className="text-center mb-8">
           <img 
-            src="/logo.png" 
-            alt="DSC UTE Logo" 
-            className="h-16 mx-auto mb-4"
+            src={bannerDSC} 
+            alt="DSC UTE banner" 
+            className="h-auto mx-auto mb-4"
           />
           <h1 className="text-2xl font-bold text-gray-800">
             Đăng nhập Admin
