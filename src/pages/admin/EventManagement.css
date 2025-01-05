@@ -1,0 +1,10 @@
+.ant-upload-select-picture-card {
+  width: 128px !important;
+  height: 128px !important;
+}
+
+.ant-upload-select-picture-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} 
