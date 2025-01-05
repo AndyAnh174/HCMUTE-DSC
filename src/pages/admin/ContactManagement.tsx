@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table, Space, Button, message, Popconfirm, Typography, Tag } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import axiosInstance from '../../utils/axios';
+import { ColumnType } from 'antd/es/table';
 
 const { Title } = Typography;
 
@@ -156,9 +157,8 @@ const ContactManagement = () => {
           Tổng số: {contacts.length} liên hệ
         </span>
       </div>
-
       <Table
-        columns={columns}
+        columns={columns as ColumnType<Contact>[]}
         dataSource={contacts}
         rowKey="id"
         loading={loading}

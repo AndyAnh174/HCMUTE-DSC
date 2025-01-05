@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, Table, Button, Modal, Form, Input, Select, Tag, message, Avatar, Divider, Upload } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
-import type { UploadChangeParam } from 'antd/es/upload';
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import type { RcFile } from 'antd/es/upload/interface';
 import { config } from '../../config/env';
 
 const { confirm } = Modal;
@@ -210,7 +209,7 @@ const MemberManagement = () => {
   };
 
   const handleUpload = async (options: any) => {
-    const { onSuccess, onError, file, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     const formData = new FormData();
     formData.append('avatar', file);
     formData.append('name', form.getFieldValue('name'));

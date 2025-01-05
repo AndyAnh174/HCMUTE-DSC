@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider } from 'antd';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
 import Home from './pages/Home';
@@ -12,9 +12,8 @@ import Login from './pages/Login';
 import { AuthProvider } from './hooks/useAuth.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/admin/Dashboard';
-import { config } from './config/env';
 import ProjectManagement from './pages/admin/ProjectManagement';
-import BannerManagement from './pages/admin/BannerManagement';
+
 
 function App() {
   return (

@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from 'antd';
-import { IconUsers, IconCode, IconBrandGoogle, IconRocket } from '../utils/icons';
+import { IconUsers, IconCode, IconBrandGoogle } from '../utils/icons';
 import { Link } from 'react-router-dom';
 import { config } from '../config/env';
 
@@ -14,7 +14,7 @@ const IconWrapper = ({ children }: { children: React.ReactNode }) => (
 const Home = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -23,7 +23,7 @@ const Home = () => {
         const result = await response.json();
         if (response.ok) {
           // Chỉ lấy các banner đang active
-          const activeBanners = result.data.filter(banner => banner.active);
+          const activeBanners = result.data.filter((banner: { active: boolean }) => banner.active);
           setBanners(activeBanners);
         }
       } catch (error) {
@@ -96,7 +96,7 @@ const Home = () => {
             <div className="lg:w-1/2 relative h-[400px] w-full overflow-hidden rounded-2xl">
               {banners.map((banner, index) => (
                 <motion.div
-                  key={banner.id}
+                  key={index}
                   className="absolute inset-0"
                   initial={{ opacity: 0, x: 100 }}
                   animate={{ 
@@ -107,8 +107,8 @@ const Home = () => {
                   style={{ display: currentBanner === index ? 'block' : 'none' }}
                 >
                   <img
-                    src={`${config.apiUrl}${banner.image}`}
-                    alt={banner.title}
+                    src={`${config.apiUrl}${(banner as any).image}`}
+                    alt={`${(banner as any).title}`}
                     className="w-full h-full object-cover"
                   />
                 </motion.div>

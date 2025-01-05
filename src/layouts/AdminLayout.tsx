@@ -1,12 +1,9 @@
-import { Layout, Menu, message } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
-import { IconDashboard, IconUsers, IconCalendarEvent, IconCode, IconPhoto } from '../utils/icons';
+import { Layout, message } from 'antd';
 import { useState, useEffect } from 'react';
 
 const { Content } = Layout;
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation();
   const [error, setError] = useState<Error | null>(null);
 
   // Error boundary
@@ -21,8 +18,9 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       message.error('Có lỗi xảy ra trong giao diện admin');
     };
 
-    window.addEventListener('error', (event) => handleError(event.error));
-    return () => window.removeEventListener('error', (event) => handleError(event.error));
+    const errorHandler = (event: ErrorEvent) => handleError(event.error);
+    window.addEventListener('error', errorHandler);
+    return () => window.removeEventListener('error', errorHandler);
   }, []);
 
   if (error) {
@@ -34,7 +32,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </h1>
           <pre className="text-left bg-gray-100 p-4 rounded">
             {error.message}
-            {error.stack}
+            {error.stack && <div className="mt-2">{error.stack}</div>}
           </pre>
         </div>
       </div>
@@ -43,11 +41,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Layout className="min-h-screen">
-      <Content className="bg-gray-50">
+      <Content className="bg-gray-50 p-6">
         {children}
       </Content>
     </Layout>
   );
 };
 
-export default AdminLayout; 
+export default AdminLayout;

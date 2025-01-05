@@ -3,7 +3,6 @@ import { Card, Table, Button, Modal, Form, Input, Select, InputNumber, Upload, m
 import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
-import type { RcFile } from 'antd/es/upload/interface';
 
 interface Project {
   id: number;
@@ -184,15 +183,15 @@ const ProjectManagement = () => {
     } catch (error) {
       console.error('Error submitting project:', {
         error,
-        message: error.message,
-        stack: error.stack
+        message: error instanceof Error ? error.message : 'Có lỗi xảy ra',
+        stack: error instanceof Error ? error.stack : undefined
       });
-      message.error('Không thể lưu dự án: ' + error.message);
+      message.error('Không thể lưu dự án: ' + (error instanceof Error ? error.message : 'Có lỗi xảy ra'));
     }
   };
 
   const handleUploadProjectImage = async (options: any) => {
-    const { onSuccess, onError, file, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     const formData = new FormData();
     formData.append('image', file);
     formData.append('title', form.getFieldValue('title') || 'project');
@@ -226,7 +225,7 @@ const ProjectManagement = () => {
   };
 
   const handleUploadMemberAvatar = async (options: any) => {
-    const { onSuccess, onError, file, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     const formData = new FormData();
     formData.append('image', file);
     formData.append('title', 'member-avatar');
@@ -557,4 +556,4 @@ const ProjectManagement = () => {
   );
 };
 
-export default ProjectManagement; 
+export default ProjectManagement;

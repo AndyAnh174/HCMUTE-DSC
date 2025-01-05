@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Upload, Switch, message, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
-import type { RcFile, UploadProps } from 'antd/es/upload';
+import type { UploadProps } from 'antd/es/upload';
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
 
@@ -23,7 +23,7 @@ const BannerManagement = () => {
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const { user } = useAuth();
+  useAuth();
 
   const fetchBanners = async () => {
     try {
@@ -103,7 +103,6 @@ const BannerManagement = () => {
         throw new Error(errorData.error || 'Không thể lưu banner');
       }
 
-      const data = await response.json();
       message.success(`${editingBanner ? 'Cập nhật' : 'Thêm'} banner thành công`);
       setModalVisible(false);
       fetchBanners();

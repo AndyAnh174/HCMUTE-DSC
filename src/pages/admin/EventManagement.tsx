@@ -4,9 +4,6 @@ import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@an
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
 import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
-import type { UploadChangeParam } from 'antd/es/upload';
-import type { RcFile, UploadFile } from 'antd/es/upload/interface';
 import './EventManagement.css';
 
 const { confirm } = Modal;
@@ -116,12 +113,17 @@ const EventManagement = () => {
 
     } catch (error) {
       console.error('Error submitting event:', error);
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-      message.error('Có lỗi xảy ra khi lưu sự kiện: ' + error.message);
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        });
+        message.error('Có lỗi xảy ra khi lưu sự kiện: ' + error.message);
+      } else {
+        console.error('Unknown error:', error);
+        message.error('Có lỗi xảy ra khi lưu sự kiện');
+      }
     }
   };
 
@@ -180,7 +182,7 @@ const EventManagement = () => {
   };
 
   const handleUpload = async (options: any) => {
-    const { onSuccess, onError, file, onProgress } = options;
+    const { onSuccess, onError, file } = options;
     const formData = new FormData();
     formData.append('image', file);
     formData.append('title', form.getFieldValue('title') || 'event');

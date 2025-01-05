@@ -1,6 +1,6 @@
 import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Card, Avatar, Tag, Divider, Button, message } from 'antd';
+import { Card, Avatar, Tag, Divider, message } from 'antd';
 import { IconBrandFacebook, IconBrandGithub, IconMail } from '../utils/icons';
 import Section, { SectionHeader } from '../components/ui/Section';
 import Grid from '../components/ui/Grid';

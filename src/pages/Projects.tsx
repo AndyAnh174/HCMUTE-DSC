@@ -2,7 +2,7 @@ import { useState, Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, Tag, Button, Progress, Modal, Spin, Avatar } from 'antd';
 import { IconBrandGithub, IconExternalLink, IconUsers } from '../utils/icons';
-import Section, { SectionHeader } from '../components/ui/Section';
+import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
@@ -68,8 +68,8 @@ const Projects = () => {
       } catch (error) {
         console.error('Error fetching projects:', {
           error,
-          message: error.message,
-          stack: error.stack
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined
         });
       } finally {
         setLoading(false);

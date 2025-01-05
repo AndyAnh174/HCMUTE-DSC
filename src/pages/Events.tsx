@@ -2,7 +2,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Card, Tag, Button, message, Modal } from 'antd';
 import { IconCalendar, IconMapPin, IconUsers } from '../utils/icons';
-import Section, { SectionHeader } from '../components/ui/Section';
+import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
@@ -102,7 +102,11 @@ const Events = () => {
 
       if (response.ok) {
         message.success('Đăng ký tham gia thành công!');
-        fetchEvents();
+        setEvents(prevEvents => prevEvents.map(event => 
+          event.id === selectedEvent.id 
+            ? {...event, registered_ips: [...event.registered_ips, userIp]}
+            : event
+        ));
       } else {
         if (data.error === 'IP_ALREADY_REGISTERED') {
           message.warning('Bạn đã đăng ký tham gia sự kiện này rồi!');
@@ -112,8 +116,12 @@ const Events = () => {
           throw new Error(data.message || 'Có lỗi xảy ra');
         }
       }
-    } catch (error) {
-      message.error('Không thể đăng ký tham gia: ' + error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        message.error('Không thể đăng ký tham gia: ' + error.message);
+      } else {
+        message.error('Không thể đăng ký tham gia: Có lỗi xảy ra');
+      }
     } finally {
       setRegistering(false);
       setRegisterModalVisible(false);
