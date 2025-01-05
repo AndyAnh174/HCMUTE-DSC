@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     try {
       // Gọi API logout
       if (token) {
-        await fetch('https://partially-surgeon-long-fridge.trycloudflare.com/auth/logout', {
+        await fetch('https://dining-scientific-shanghai-demonstrates.trycloudflare.com/auth/logout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     try {
       if (!refreshToken) return null;
 
-      const response = await fetch('https://partially-surgeon-long-fridge.trycloudflare.com/auth/refresh', {
+      const response = await fetch('https://dining-scientific-shanghai-demonstrates.trycloudflare.com/auth/refresh', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${refreshToken}`

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://partially-surgeon-long-fridge.trycloudflare.com',
+  baseURL: 'https://dining-scientific-shanghai-demonstrates.trycloudflare.com',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
