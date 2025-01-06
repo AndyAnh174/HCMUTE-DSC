@@ -23,6 +23,7 @@ const IconBrandLinkedin = lazy(() => import('@tabler/icons-react').then(module =
 const IconCircleFilled = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconCircleFilled })));
 const IconCalendar = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconCalendar })));
 const IconCircleCheck = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconCircleCheck })));
+const IconDeviceLaptop = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconDeviceLaptop })));
 
 // Log để debug
 console.log('Loading icons:', {
@@ -48,7 +49,8 @@ console.log('Loading icons:', {
   IconBrandLinkedin,
   IconCircleFilled,
   IconCalendar,
-  IconCircleCheck
+  IconCircleCheck,
+  IconDeviceLaptop,
 });
 
 export {
@@ -74,5 +76,6 @@ export {
   IconBrandLinkedin,
   IconCircleFilled,
   IconCalendar,
-  IconCircleCheck
+  IconCircleCheck,
+  IconDeviceLaptop,
 };

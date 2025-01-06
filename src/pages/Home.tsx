@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from 'antd';
-import { IconUsers, IconCode, IconBrandGoogle } from '../utils/icons';
+import { IconUsers, IconCode, IconDeviceLaptop } from '../utils/icons';
 import { Link } from 'react-router-dom';
 import { config } from '../config/env';
 
@@ -143,11 +143,11 @@ const Home = () => {
           >
             <div className="p-6 bg-white rounded-lg shadow-lg">
               <IconWrapper>
-                <IconBrandGoogle className="text-primary w-12 h-12 mb-4" />
+                <IconDeviceLaptop className="text-primary w-12 h-12 mb-4" />
               </IconWrapper>
-              <h3 className="text-xl font-semibold mb-3">Google Technologies</h3>
+              <h3 className="text-xl font-semibold mb-3">Công nghệ mới</h3>
               <p className="text-gray-600">
-                Learn and work with the latest Google technologies and tools.
+                Học hỏi và làm việc với các công nghệ hiện đại nhất.
               </p>
             </div>
             <div className="p-6 bg-white rounded-lg shadow-lg">

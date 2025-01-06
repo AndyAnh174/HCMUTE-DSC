@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { IconBrandGoogle, IconCode, IconTrophy, IconBulb } from '../utils/icons';
+import { IconDeviceLaptop, IconCode, IconTrophy, IconBulb } from '../utils/icons';
 import Section, { SectionHeader } from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Timeline from '../components/ui/Timeline';
@@ -135,9 +135,9 @@ const timelineItems = [
 
 const features = [
   {
-    icon: IconBrandGoogle,
-    title: 'Công Nghệ Google',
-    description: 'Tiếp cận và học hỏi các công nghệ mới nhất từ Google'
+    icon: IconDeviceLaptop,
+    title: 'Công Nghệ Mới',
+    description: 'Tiếp cận và học hỏi các công nghệ hiện đại nhất'
   },
   {
     icon: IconCode,
