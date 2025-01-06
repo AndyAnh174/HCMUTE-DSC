@@ -388,10 +388,11 @@ const MemberManagement = () => {
           >
             <Select>
               <Option value="Leader CLB HCMUTEDSC">Leader CLB HCMUTEDSC</Option>
-              <Option value="Leader Team Học thuật">Leader Team Học thuật</Option>
-              <Option value="Leader Team Sự kiện">Leader Team Sự kiện</Option>
-              <Option value="Leader Team Truyền thông">Leader Team Truyền thông</Option>
+              <Option value="Leader Ban Học thuật">Leader Ban Học thuật</Option>
+              <Option value="Leader Ban Sự kiện">Leader Ban Sự kiện</Option>
+              <Option value="Leader Ban Truyền thông">Leader Ban Truyền thông</Option>
               <Option value="Technical Mentor">Technical Mentor</Option>
+              <Option value="Technical Mentee">Technical Mentee</Option>
               <Option value="Event Coordinator">Event Coordinator</Option>
               <Option value="Content Creator">Content Creator</Option>
             </Select>
