@@ -9,65 +9,82 @@ import banner1 from '../assets/banner1.png';
 import banner2 from '../assets/banner2.png';
 import banner3 from '../assets/banner3.png';
 import banner4 from '../assets/banner4.png';
+import OpenGDSC from '../assets/timeline/Open-GDSC.jpg';
+import GoogleCloud from '../assets/timeline/Google-Cloud.jpg';
+import ECom from '../assets/timeline/E-Com.jpg';
+import OpenDay from '../assets/timeline/OpenDay.jpg';
+import HCMUTEDSC from '../assets/timeline/DSC.jpg'
 
 const timelineItems = [
   {
     year: '2020',
-    title: 'Thành lập DSC HCM UTE',
+    title: 'Thành lập HCMUTE - Google Developer Student Clubs',
     description: 'Câu lạc bộ được thành lập với sứ mệnh phát triển cộng đồng lập trình viên tại trường ĐH SPKT TPHCM.',
-    image: '/images/history/founding.jpg',
+    image: OpenGDSC,
     achievements: [
       {
-        title: 'Thành lập câu lạc bộ',
-        description: 'Khởi đầu hành trình với 20 thành viên đầu tiên đầy nhiệt huyết'
+        title: 'Google Resource',
+        description: 'Truy cập vài các tài nguyên dành cho dành phát triển của Google.'
       },
       {
-        title: 'Workshop đầu tiên',
-        description: 'Tổ chức thành công workshop "Web Development with React" với 50 sinh viên tham gia'
+        title: 'Technology',
+        description: 'Chia sẻ, học hỏi những kiến thức về Công nghệ mới.'
       },
       {
-        title: 'Xây dựng cộng đồng',
-        description: 'Tạo group Facebook và Discord server để kết nối thành viên'
+        title: 'Learning By Making',
+        description: 'Xây dựng các sản phẩm công nghệ giải quyết những bài toán thực tiễn.'
+      },
+      {
+        title: 'Multi-Culture',
+        description: 'Hướng tới các thành viên đến từ các ngành học và các khóa khác nhau.'
       }
     ]
   },
   {
     year: '2021',
-    title: 'Tổ chức các workshop đầu tiên',
-    description: 'Chuỗi workshop về Web Development, Mobile App và Cloud Computing với sự tham gia của hơn 200 sinh viên.',
-    image: '/images/history/first-workshop.jpg',
+    title: 'Câu lạc bộ bắt đầu đi vào hoạt động',
+    description: 'Bắt đầu tuyển thành viên và tổ chức các sự kiện đầu tiên.',
+    image: GoogleCloud,
     achievements: [
       {
-        title: 'Chuỗi workshop thành công',
-        description: 'Tổ chức 5 workshop với hơn 200 sinh viên tham gia'
+        title: 'Tuyển Thành viên GEN 1 và chia ban chủ nhiệm',
+        description: 'Tuyển thành viên đầu tiên và chia ban chủ nhiệm để đảm bảo câu lạc bộ hoạt động hiệu quả.'
       },
       {
-        title: 'Dự án đầu tiên',
-        description: 'Hoàn thành dự án website cho câu lạc bộ sinh viên của trường'
+        title: 'Buổi sinh hoạt đầu tiên',
+        description: 'Tổ chức buổi sinh hoạt đầu tiên để giới thiệu câu lạc bộ và các hoạt động sắp tới.'
       },
       {
         title: 'Phát triển thành viên',
-        description: 'Tăng số lượng thành viên lên 100+ với nhiều hoạt động đa dạng'
+        description: 'Tăng số lượng thành viên với nhiều hoạt động đa dạng'
+      },
+      {
+        title: 'Tổ chức các sự kiện đầu tiên',
+        description: 'Tổ chức các sự kiện đầu tiên như Tech Talk và các hoạt động ngoại khóa.'
       }
     ]
   },
   {
     year: '2022',
     title: 'Mở rộng cộng đồng và tổ chức các sự kiện lớn',
-    description: 'Tổ chức Hackathon và Tech Conference với sự tham gia của các chuyên gia từ Google và các công ty công nghệ hàng đầu.',
-    image: '/images/history/expansion.jpg',
+    description: 'Tổ chức MASTERING IT, Tech Conference và Workshopvới sự tham gia của các chuyên gia từ Google và các công ty công nghệ hàng đầu.',
+    image: ECom,
     achievements: [
       {
-        title: 'DSC Hackathon 2022',
-        description: 'Cuộc thi lập trình với 20 đội tham gia và tổng giải thưởng 20 triệu đồng'
+        title: 'MASTERING IT 2022',
+        description: 'Cuộc thi lập trình tìm ra những nhà phát triển công nghệ tốt nhất.'
       },
       {
-        title: 'Tech Conference',
-        description: 'Hội thảo công nghệ với 5 diễn giả từ Google và các công ty hàng đầu'
+        title: 'Workshop: "E-COMMERCE: GAIN FROM GROWTH" ',
+        description: 'Tổ chức sự kiện về E-Commerce với sự tham gia của các chuyên gia từ Google và các công ty công nghệ hàng đầu.'
       },
       {
-        title: 'Hợp tác doanh nghiệp',
-        description: 'Ký kết hợp tác với 5 công ty công nghệ để tạo cơ hội thực tập cho sinh viên'
+        title: 'CTF-HCMUTE 2022',
+        description: 'Tổ chức cuộc thi CTF với sự tham gia của các chuyên gia của sinh viên trường ĐH SPKT TPHCM.'
+      },
+      {
+        title: 'Tuyển thành viên GEN 2',
+        description: 'Tuyển thành viên để đảm bảo câu lạc bộ hoạt động hiệu quả.'
       }
     ]
   },
@@ -75,59 +92,59 @@ const timelineItems = [
     year: '2023',
     title: 'Phát triển các dự án cộng đồng',
     description: 'Triển khai nhiều dự án thực tế, giúp sinh viên tích lũy kinh nghiệm và đóng góp cho cộng đồng.',
-    image: '/images/history/projects.jpg',
+    image: OpenDay,
     achievements: [
       {
-        title: 'Dự án vì cộng đồng',
-        description: 'Phát triển 3 dự án phần mềm hỗ trợ các tổ chức phi lợi nhuận'
+        title: 'OPEN DAY 2023',
+        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  “đại tiệc móc khóa” khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB.'
       },
       {
-        title: 'Mentor System',
-        description: 'Xây dựng hệ thống mentor-mentee kết nối sinh viên với chuyên gia'
+        title: 'Workshop: "GIT&GITHUB"',
+        description: 'Tổ chức sự kiện về GIT&GITHUB với sự tham gia của các chuyên gia từ Google và các công ty công nghệ hàng đầu.'
       },
       {
-        title: 'Tech Bootcamp',
-        description: 'Tổ chức bootcamp 2 tháng đào tạo 50 sinh viên về Full-stack Development'
+        title: 'Workshop: "GDSC HACKATHON"',
+        description: 'Nói về hội chứng "kẻ giả mạo" trong ngành lập trình và cách để tránh nó.'
+      },
+      {
+        title: 'Workshop: "BLOCKCHAIN 101: FUNDAMENTALS AND SOLIDITY"',
+        description: 'Nói về cách thức hoạt động của Blockchain và cách để tạo ra một dự án Blockchain.'
+      },
+      {
+        title: 'CUỘC THI HỌC THUẬT TRUYỀN THỐNG “MASTERING IT” 2023',
+        description: 'Cuộc thi lập trình tìm ra những nhà phát triển công nghệ tốt nhất.'
+      },
+      {
+        title: 'GDSC Summit Việt Nam 2023',
+        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  “đại tiệc móc khóa” khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB GDSC VN.'
+      },
+      {
+        title: 'Tuyển thành viên GEN 3',
+        description: 'Tuyển thành viên để đảm bảo câu lạc bộ hoạt động hiệu quả.'
       }
     ]
   },
   {
     year: '2024',
     title: 'Hướng tới tương lai',
-    description: 'Tiếp tục phát triển và mở rộng tầm ảnh hưởng, trở thành một trong những DSC hàng đầu tại Việt Nam.',
-    image: '/images/history/future.jpg',
+    description: 'Bước ngoặc lớn đổi mới với CLB GDSC HCMUTE.',
+    image: HCMUTEDSC,
     achievements: [
       {
-        title: 'Mở rộng quy mô',
-        description: 'Mục tiêu đạt 500+ thành viên và tổ chức 20+ sự kiện trong năm'
+        title: 'Quyết định thay đổi định hướng',
+        description: 'Quyết định đổi tên thành CLB HCMUTE - Developer Student Clubs, lần này sẽ không phụ thuộc vào Google nữa mà sẽ cố gắng phát triển nhìu công nghệ hơn, cộng đồng lập trình viên tại trường ĐH SPKT TPHCM.'
       },
       {
-        title: 'Hợp tác quốc tế',
-        description: 'Kết nối với các DSC trong khu vực Đông Nam Á để tổ chức sự kiện chung'
+        title: 'CHƯƠNG TRÌNH: “GIT & GITHUB STUDY JAM”',
+        description: 'Tổ chức sự kiện về GIT&GITHUB, được học tập về GIT&GITHUB và tổ chức xây dựng ứng dụng nhận các giải thưởng hấp dẫn.'
       },
       {
-        title: 'Innovation Hub',
-        description: 'Xây dựng không gian sáng tạo và học tập cho sinh viên SPKT'
-      }
-    ]
-  },
-  {
-    year: '2025',
-    title: 'Hướng tới tương lai',
-    description: 'Tiếp tục phát triển và mở rộng tầm ảnh hưởng, trở thành một trong những DSC hàng đầu tại Việt Nam.',
-    image: '/images/history/future.jpg',
-    achievements: [
-      {
-        title: 'Mở rộng quy mô',
-        description: 'Mục tiêu đạt 500+ thành viên và tổ chức 20+ sự kiện trong năm'
+        title: 'CHÀO ĐÓN THÀNH VIÊN MỚI & KỶ NIỆM 3 NĂM THÀNH LẬP',
+        description: 'Tổ chức buổi sinh hoạt đầu tiên của CLB HCMUTE - Developer Student Clubs, đồng thời chào đón các bạn sinh viên mới và kỷ niệm 3 năm thành lập của CLB.'
       },
       {
-        title: 'Hợp tác quốc tế',
-        description: 'Kết nối với các DSC trong khu vực Đông Nam Á để tổ chức sự kiện chung'
-      },
-      {
-        title: 'Innovation Hub',
-        description: 'Xây dựng không gian sáng tạo và học tập cho sinh viên SPKT'
+        title: 'Workshop INTRODUCTION TO LINUX',
+        description: 'Tổ chức sự kiện về LINUX, được học tập về LINUX và hướng dẫn cơ bản cách tổ chức tạo server từ Ubuntu Server.'
       }
     ]
   }
@@ -182,9 +199,9 @@ const About = () => {
             className="lg:w-1/2"
           >
             <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-              Về Google Developer Student Clubs
+              Về HCMUTE
               <br />
-              <span className="text-primary">HCM UTE</span>
+              <span className="text-primary">Developer Student Clubs</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8">
               Chúng tôi là một cộng đồng sinh viên đam mê công nghệ, nơi các bạn có thể học hỏi, 
@@ -244,10 +261,10 @@ const About = () => {
       <Section className="bg-primary/5">
         <Grid cols={4} gap={8}>
           {[
-            { number: '500+', label: 'Thành viên' },
-            { number: '50+', label: 'Sự kiện đã tổ chức' },
-            { number: '20+', label: 'Dự án thực hiện' },
-            { number: '10+', label: 'Đối tác' },
+            { number: '100+', label: 'Thành viên' },
+            { number: '20+', label: 'Sự kiện đã tổ chức' },
+            { number: '10+', label: 'Dự án thực hiện' },
+            { number: '5+', label: 'Đối tác' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}

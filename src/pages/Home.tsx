@@ -189,8 +189,10 @@ const Home = () => {
               Join our community today and embark on an exciting journey of
               learning, innovation, and growth.
             </p>
-            <Button type="primary" size="large">
-              Get Started Now
+            <Button
+            type="primary"
+            size="large">
+              <Link to="/contact">Get Started Now</Link>
             </Button>
           </motion.div>
         </div>

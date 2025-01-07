@@ -6,6 +6,7 @@ import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
+import { Link } from 'react-router-dom';
 
 interface Event {
   id: number;
@@ -310,7 +311,7 @@ const Events = () => {
             bổ ích cho cộng đồng sinh viên UTE.
           </p>
           <Button type="primary" size="large">
-            Liên hệ hợp tác
+            <Link to="/contact">Liên hệ hợp tác</Link>
           </Button>
         </motion.div>
       </Section>

@@ -94,7 +94,15 @@ const Navbar = () => {
 
           {/* Join Button */}
           <div className="hidden lg:block">
-            <Button type="default" size="large" className="px-6 nav-text font-semibold bg-white text-secondary hover:bg-white/90">
+            <Button 
+              type="default" 
+              href="https://www.facebook.com/hcmute.dsc" 
+              target="_blank"
+              rel="noopener noreferrer"
+              size="large" 
+              className="px-6 nav-text font-semibold bg-white text-secondary hover:bg-white/90"
+              onClick={() => window.open('https://www.facebook.com/hcmute.dsc', '_blank')}
+            >
               Tham gia ngay
             </Button>
           </div>
