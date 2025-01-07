@@ -79,14 +79,14 @@ const Home = () => {
                     icon={<IconUsers className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/members">Join Us</Link>
+                    <Link to="/members" onClick={() => window.scrollTo(0, 0)}>Join Us</Link>
                   </Button>
                   <Button
                     size="large"
                     icon={<IconCode className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/projects">View Projects</Link>
+                    <Link to="/projects" onClick={() => window.scrollTo(0, 0)}>View Projects</Link>
                   </Button>
                 </div>
               </motion.div>
@@ -192,7 +192,7 @@ const Home = () => {
             <Button
             type="primary"
             size="large">
-              <Link to="/contact">Get Started Now</Link>
+              <Link to="/contact#top" onClick={() => window.scrollTo(0, 0)}>Get Started Now</Link>
             </Button>
           </motion.div>
         </div>

@@ -6,6 +6,7 @@ import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
+import { Link } from 'react-router-dom';
 
 interface Project {
   id: number;
@@ -263,7 +264,7 @@ const Projects = () => {
             biến ý tưởng thành hiện thực.
           </p>
           <Button type="primary" size="large">
-            Đề xuất dự án
+            <Link to="/contact#top" onClick={() => window.scrollTo(0, 0)}>Đề xuất dự án</Link>  
           </Button>
         </motion.div>
       </Section>

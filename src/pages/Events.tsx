@@ -311,7 +311,7 @@ const Events = () => {
             bổ ích cho cộng đồng sinh viên UTE.
           </p>
           <Button type="primary" size="large">
-            <Link to="/contact">Liên hệ hợp tác</Link>
+            <Link to="/contact#top" onClick={() => window.scrollTo(0, 0)}>Liên hệ hợp tác</Link>
           </Button>
         </motion.div>
       </Section>
