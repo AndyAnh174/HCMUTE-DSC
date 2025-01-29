@@ -192,7 +192,7 @@ const Members = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('https://dining-scientific-shanghai-demonstrates.trycloudflare.com/members');
+        const response = await fetch('https://adjusted-some-suspected-yacht.trycloudflare.com/members');
         const result = await response.json();
         if (response.ok) {
           setMembers(result.data);
