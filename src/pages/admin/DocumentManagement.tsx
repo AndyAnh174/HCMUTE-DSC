@@ -200,7 +200,7 @@ const DocumentManagement = () => {
           if (key === 'active') {
             formData.append(key, String(checked));
           } else {
-            formData.append(key, document[key]);
+            formData.append(key, String((document as any)[key]));
           }
         }
       });

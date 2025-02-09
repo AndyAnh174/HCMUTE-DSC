@@ -6,6 +6,16 @@ import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { getImageUrl } from '../utils/image';
 
+interface Banner {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  order: number;
+  active: boolean;
+  created_at: string;
+}
+
 const IconWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<div className="w-12 h-12 bg-gray-200 animate-pulse rounded" />}>
     {children}
@@ -14,7 +24,7 @@ const IconWrapper = ({ children }: { children: React.ReactNode }) => (
 
 const Home = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [banners, setBanners] = useState([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [, setLoading] = useState(true);
 
   useEffect(() => {
@@ -124,8 +134,8 @@ const Home = () => {
                   style={{ display: currentBanner === index ? 'block' : 'none' }}
                 >
                   <img
-                    src={getImageUrl(banner.image)}
-                    alt={banner.title}
+                    src={getImageUrl((banner as Banner).image)}
+                    alt={(banner as Banner).title}
                     className="w-full h-full object-cover"
                   />
                 </motion.div>

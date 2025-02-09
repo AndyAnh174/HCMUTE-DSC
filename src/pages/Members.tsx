@@ -254,11 +254,7 @@ const Members = () => {
   return (
     <Section>
       <SectionHeader
-        title={
-          <>
-            Thành viên <span className="text-primary">DSC</span>
-          </>
-        }
+        title="Thành viên DSC"
         subtitle="Gặp gỡ những thành viên tài năng của DSC UTE"
       />
 
