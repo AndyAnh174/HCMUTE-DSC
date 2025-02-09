@@ -255,6 +255,15 @@ const ProjectManagement = () => {
     }
   };
 
+  const getAvatarUrl = (index: number) => {
+    const avatarPath = form.getFieldValue(['teamMembers', index, 'avatar']);
+    if (!avatarPath) return '';
+    
+    return avatarPath.toString().startsWith('http') 
+      ? avatarPath 
+      : `${config.apiUrl}${avatarPath}`;
+  };
+
   const columns = [
     {
       title: 'Tên dự án',
@@ -514,10 +523,7 @@ const ProjectManagement = () => {
                         >
                           {form.getFieldValue(['teamMembers', index, 'avatar']) ? (
                             <img 
-                              src={form.getFieldValue(['teamMembers', index, 'avatar']).startsWith('http') 
-                                ? form.getFieldValue(['teamMembers', index, 'avatar'])
-                                : `${config.apiUrl}${form.getFieldValue(['teamMembers', index, 'avatar'])}`
-                              } 
+                              src={getAvatarUrl(index)} 
                               alt="avatar" 
                               style={{ width: '100%' }} 
                             />
