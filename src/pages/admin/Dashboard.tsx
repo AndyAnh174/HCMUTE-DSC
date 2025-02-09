@@ -7,6 +7,7 @@ import EventManagement from './EventManagement';
 import ProjectManagement from './ProjectManagement';
 import ContactManagement from './ContactManagement';
 import BannerManagement from './BannerManagement';
+import DocumentManagement from './DocumentManagement';
 import logoDSC from '../../assets/LogoDSC.png';
 
 import {
@@ -16,8 +17,11 @@ import {
   ProjectOutlined,
   LogoutOutlined,
   MessageOutlined,
-  PictureOutlined
+  PictureOutlined,
+  FileOutlined
 } from '@ant-design/icons';
+
+
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
@@ -62,8 +66,15 @@ const AdminDashboard = () => {
       key: '6',
       icon: <PictureOutlined />,
       label: 'Quản lý banner',
+    },
+    {
+      key: '7',
+      icon: <FileOutlined />,
+      label: 'Quản lý tài liệu',
     }
   ];
+
+
 
   const renderContent = () => {
     switch (selectedKey) {
@@ -83,8 +94,13 @@ const AdminDashboard = () => {
         return <ContactManagement />;
       case '6':
         return <BannerManagement />;
+      case '7':
+        return <DocumentManagement />;
       default:
         return null;
+
+
+
     }
   };
 
@@ -97,7 +113,7 @@ const AdminDashboard = () => {
             alt="DSC UTE Logo" 
             className="h-16 m-auto mr-4"
           />
-          <Title level={4} className="m-0 text-white !text-white">
+          <Title level={4} className="m-0 text-white">
             DSC UTE Admin
           </Title>
         </div>

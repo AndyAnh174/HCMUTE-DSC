@@ -25,6 +25,12 @@ interface Member {
 
 const { Option } = Select;
 
+const getImageUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `${config.apiUrl}${path}`;
+};
+
 const MemberManagement = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -210,30 +216,40 @@ const MemberManagement = () => {
 
   const handleUpload = async (options: any) => {
     const { onSuccess, onError, file } = options;
+    
+    if (!token) {
+      message.error('Bạn cần đăng nhập lại');
+      onError({ error: 'No token available' });
+      return;
+    }
+
     const formData = new FormData();
     formData.append('avatar', file);
-    formData.append('name', form.getFieldValue('name'));
+    formData.append('name', form.getFieldValue('name') || 'member');
 
     try {
       const response = await fetch(`${config.apiUrl}/members/upload-avatar`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
         },
         body: formData
       });
 
-      const data = await response.json();
-      
-      if (response.ok) {
-        onSuccess(data);
-        form.setFieldsValue({ avatar: data.data.url });
-        setImageUrl(data.data.url);
-      } else {
-        onError({ error: data.message });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
       }
-    } catch (error) {
-      onError({ error: 'Upload failed.' });
+
+      const data = await response.json();
+      onSuccess(data);
+      form.setFieldsValue({ avatar: data.data.url });
+      setImageUrl(data.data.url);
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      message.error('Không thể upload ảnh: ' + (error.message || 'Unknown error'));
+      onError({ error: error.message });
     }
   };
 
@@ -243,7 +259,7 @@ const MemberManagement = () => {
       dataIndex: 'avatar',
       key: 'avatar',
       render: (avatar: string, record: Member) => (
-        <Avatar src={avatar} alt={record.name} size={40} />
+        <Avatar src={getImageUrl(avatar)} alt={record.name} size={40} />
       )
     },
     {
@@ -311,7 +327,7 @@ const MemberManagement = () => {
           className="bg-gradient-to-br from-primary/5 to-primary/10"
         >
           <div className="flex items-center gap-6">
-            <Avatar src={currentLeader.avatar} size={100} />
+            <Avatar src={getImageUrl(currentLeader.avatar)} size={100} />
             <div>
               <h3 className="text-xl font-semibold">{currentLeader.name}</h3>
               <p className="text-primary">{currentLeader.role}</p>

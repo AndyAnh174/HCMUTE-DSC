@@ -66,9 +66,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
 
   const logout = async () => {
     try {
-      // Gọi API logout
+      // Gọi API logout sử dụng URL từ biến môi trường VITE_API_URL
       if (token) {
-        await fetch('https://dining-scientific-shanghai-demonstrates.trycloudflare.com/auth/logout', {
+        await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     try {
       if (!refreshToken) return null;
 
-      const response = await fetch('https://dining-scientific-shanghai-demonstrates.trycloudflare.com/auth/refresh', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${refreshToken}`

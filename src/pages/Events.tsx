@@ -7,6 +7,7 @@ import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../utils/image';
 
 interface Event {
   id: number;
@@ -207,7 +208,7 @@ const Events = () => {
                   <div className="relative h-48">
                     <img
                       alt={event.title}
-                      src={event.image.startsWith('http') ? event.image : `${config.apiUrl}${event.image}`}
+                      src={getImageUrl(event.image)}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 right-4">

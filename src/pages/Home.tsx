@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { Button } from 'antd';
 import { IconUsers, IconCode, IconDeviceLaptop } from '../utils/icons';
 import { Link } from 'react-router-dom';
-import { config } from '../config/env';
+import { message } from 'antd';
+import { getImageUrl } from '../utils/image';
 
 const IconWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<div className="w-12 h-12 bg-gray-200 animate-pulse rounded" />}>
@@ -17,23 +18,39 @@ const Home = () => {
   const [, setLoading] = useState(true);
 
   useEffect(() => {
+    // Biến cờ để tránh cập nhật state sau khi component unmount
+    let isCancelled = false;
+
     const fetchBanners = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${config.apiUrl}/banners`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/banners`);
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP: ${response.status}`);
+        }
         const result = await response.json();
-        if (response.ok) {
-          // Chỉ lấy các banner đang active
-          const activeBanners = result.data.filter((banner: { active: boolean }) => banner.active);
+        if (!isCancelled) {
+          const activeBanners = result.data?.filter((banner: { active: boolean }) => banner.active) || [];
           setBanners(activeBanners);
         }
       } catch (error) {
-        console.error('Error fetching banners:', error);
+        if (!isCancelled) {
+          console.error('Lỗi khi lấy banner:', error);
+          message.error('Không thể tải banner. Vui lòng thử lại sau.');
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchBanners();
+
+    // Cleanup: đánh dấu hủy để không cập nhật state sau khi component unmount
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -79,14 +96,14 @@ const Home = () => {
                     icon={<IconUsers className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/members" onClick={() => window.scrollTo(0, 0)}>Join Us</Link>
+                    <Link to="/members">Join Us</Link>
                   </Button>
                   <Button
                     size="large"
                     icon={<IconCode className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/projects" onClick={() => window.scrollTo(0, 0)}>View Projects</Link>
+                    <Link to="/projects">View Projects</Link>
                   </Button>
                 </div>
               </motion.div>
@@ -107,8 +124,8 @@ const Home = () => {
                   style={{ display: currentBanner === index ? 'block' : 'none' }}
                 >
                   <img
-                    src={`${config.apiUrl}${(banner as any).image}`}
-                    alt={`${(banner as any).title}`}
+                    src={getImageUrl(banner.image)}
+                    alt={banner.title}
                     className="w-full h-full object-cover"
                   />
                 </motion.div>
@@ -189,10 +206,8 @@ const Home = () => {
               Join our community today and embark on an exciting journey of
               learning, innovation, and growth.
             </p>
-            <Button
-            type="primary"
-            size="large">
-              <Link to="/contact#top" onClick={() => window.scrollTo(0, 0)}>Get Started Now</Link>
+            <Button type="primary" size="large">
+              Get Started Now
             </Button>
           </motion.div>
         </div>

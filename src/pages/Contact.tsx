@@ -71,7 +71,7 @@ const Contact = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Liên Hệ <span className="text-primary">DSC UTE</span>
+            Liên Hệ <span className="text-primary">DSC</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi hoặc đề xuất nào. 

@@ -24,6 +24,10 @@ const IconCircleFilled = lazy(() => import('@tabler/icons-react').then(module =>
 const IconCalendar = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconCalendar })));
 const IconCircleCheck = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconCircleCheck })));
 const IconDeviceLaptop = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconDeviceLaptop })));
+const IconFile = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconFile })));
+const IconFolder = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconFolder })));
+const IconDownload = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconDownload })));
+const IconSearch = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconSearch })));
 
 // Log để debug
 console.log('Loading icons:', {
@@ -51,6 +55,10 @@ console.log('Loading icons:', {
   IconCalendar,
   IconCircleCheck,
   IconDeviceLaptop,
+  IconFile,
+  IconFolder,
+  IconDownload,
+  IconSearch,
 });
 
 export {
@@ -78,4 +86,8 @@ export {
   IconCalendar,
   IconCircleCheck,
   IconDeviceLaptop,
+  IconFile,
+  IconFolder,
+  IconDownload,
+  IconSearch,
 };

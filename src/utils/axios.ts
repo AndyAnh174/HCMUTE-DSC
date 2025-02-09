@@ -1,13 +1,15 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://adjusted-some-suspected-yacht.trycloudflare.com',
+  baseURL: import.meta.env.VITE_API_URL, // Sử dụng biến môi trường BASE_URL thay cho URL cứng
+
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
   timeout: 10000,
 });
+
 
 instance.interceptors.response.use(
   response => response,

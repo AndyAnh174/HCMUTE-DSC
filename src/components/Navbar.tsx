@@ -33,6 +33,11 @@ const menuItems = [
     description: 'Đội ngũ của chúng tôi'
   },
   { 
+    path: '/documents', 
+    label: 'Tài liệu',
+    description: 'Kho tài nguyên học tập'
+  },
+  { 
     path: '/contact', 
     label: 'Liên hệ',
     description: 'Kết nối với chúng tôi'

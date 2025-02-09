@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Upload, Switch, message, Spin } from 'antd';
+import { Table, Button, Modal, Form, Input, Upload, message, Switch } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import type { UploadFile } from 'antd/es/upload/interface';
-import type { UploadProps } from 'antd/es/upload';
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
+import { getImageUrl } from '../../utils/image';
 
 interface Banner {
   id: number;
@@ -18,20 +17,25 @@ interface Banner {
 
 const BannerManagement = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  useAuth();
+  const { token } = useAuth();
+  const [fileList, setFileList] = useState<any[]>([]);
 
   const fetchBanners = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(`${config.apiUrl}/banners`);
-      const result = await response.json();
+      const response = await fetch(`${config.apiUrl}/banners`, {
+        headers: {
+          'Referer': '/admin/banner-management'
+        }
+      });
+      const data = await response.json();
       if (response.ok) {
-        setBanners(result.data);
+        setBanners(data.data || []);
+      } else {
+        throw new Error(data.message || 'Có lỗi xảy ra');
       }
     } catch (error) {
       message.error('Không thể tải danh sách banner');
@@ -44,46 +48,14 @@ const BannerManagement = () => {
     fetchBanners();
   }, []);
 
-  const handleAdd = () => {
-    setEditingBanner(null);
-    setFileList([]);
-    form.resetFields();
-    setModalVisible(true);
-  };
-
-  const handleEdit = (record: Banner) => {
-    setEditingBanner(record);
-    form.setFieldsValue(record);
-    setFileList([]);
-    setModalVisible(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      const response = await fetch(`${config.apiUrl}/banners/${id}`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Không thể xóa banner');
-      }
-
-      message.success('Xóa banner thành công');
-      fetchBanners();
-    } catch (error: any) {
-      console.error('Error:', error);
-      message.error(error.message || 'Có lỗi xảy ra khi xóa banner');
-    }
-  };
-
   const handleSubmit = async (values: any) => {
     try {
       const formData = new FormData();
-      formData.append('title', values.title);
-      formData.append('description', values.description);
-      formData.append('order', values.order.toString());
-      formData.append('active', values.active.toString());
+      Object.keys(values).forEach(key => {
+        if (key !== 'image') {
+          formData.append(key, values[key]);
+        }
+      });
 
       if (fileList[0]?.originFileObj) {
         formData.append('image', fileList[0].originFileObj);
@@ -95,21 +67,75 @@ const BannerManagement = () => {
 
       const response = await fetch(url, {
         method: editingBanner ? 'PUT' : 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Không thể lưu banner');
+      if (response.ok) {
+        message.success(editingBanner ? 'Cập nhật thành công' : 'Thêm mới thành công');
+        setModalVisible(false);
+        form.resetFields();
+        setFileList([]);
+        fetchBanners();
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Có lỗi xảy ra');
       }
-
-      message.success(`${editingBanner ? 'Cập nhật' : 'Thêm'} banner thành công`);
-      setModalVisible(false);
-      fetchBanners();
-
     } catch (error: any) {
-      console.error('Error:', error);
-      message.error(error.message || 'Có lỗi xảy ra khi lưu banner');
+      message.error('Lỗi: ' + error.message);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`${config.apiUrl}/banners/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        message.success('Xóa banner thành công');
+        fetchBanners();
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Có lỗi xảy ra');
+      }
+    } catch (error: any) {
+      message.error('Lỗi: ' + error.message);
+    }
+  };
+
+  const handleStatusChange = async (checked: boolean, banner: Banner) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', banner.title);
+      formData.append('description', banner.description || '');
+      formData.append('order', String(banner.order));
+      formData.append('active', String(checked));
+      formData.append('created_at', banner.created_at);
+
+      const response = await fetch(`${config.apiUrl}/banners/${banner.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Referer': '/admin/banner-management'
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        message.success('Cập nhật trạng thái thành công');
+        fetchBanners();
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Có lỗi xảy ra');
+      }
+    } catch (error: any) {
+      message.error('Lỗi: ' + error.message);
     }
   };
 
@@ -119,7 +145,7 @@ const BannerManagement = () => {
       dataIndex: 'image',
       key: 'image',
       render: (image: string) => (
-        <img src={`${config.apiUrl}${image}`} alt="Banner" style={{ width: 100 }} />
+        <img src={getImageUrl(image)} alt="banner" style={{ width: 100 }} />
       )
     },
     {
@@ -136,14 +162,16 @@ const BannerManagement = () => {
       title: 'Thứ tự',
       dataIndex: 'order',
       key: 'order',
-      sorter: (a: Banner, b: Banner) => a.order - b.order,
     },
     {
       title: 'Trạng thái',
       dataIndex: 'active',
       key: 'active',
-      render: (active: boolean) => (
-        <Switch checked={active} disabled />
+      render: (active: boolean, record: Banner) => (
+        <Switch 
+          checked={active} 
+          onChange={(checked) => handleStatusChange(checked, record)}
+        />
       )
     },
     {
@@ -151,64 +179,55 @@ const BannerManagement = () => {
       key: 'action',
       render: (_: any, record: Banner) => (
         <div className="space-x-2">
-          <Button 
-            icon={<EditOutlined />} 
-            onClick={() => handleEdit(record)}
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditingBanner(record);
+              form.setFieldsValue(record);
+              setModalVisible(true);
+            }}
           >
             Sửa
           </Button>
-          <Button 
-            danger 
-            icon={<DeleteOutlined />} 
+          <Button
+            danger
+            icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.id)}
           >
             Xóa
           </Button>
         </div>
-      )
-    }
-  ];
-
-  const uploadProps: UploadProps = {
-    beforeUpload: (file) => {
-      const isImage = file.type.startsWith('image/');
-      if (!isImage) {
-        message.error('Chỉ có thể tải lên file ảnh!');
-        return false;
-      }
-      return false;
+      ),
     },
-    onChange: ({ fileList }) => setFileList(fileList),
-    maxCount: 1
-  };
+  ];
 
   return (
     <div className="p-6">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">Quản lý Banner</h1>
-        <Button 
-          type="primary" 
+      <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Quản lý Banner</h2>
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
-          onClick={handleAdd}
+          onClick={() => {
+            setEditingBanner(null);
+            form.resetFields();
+            setModalVisible(true);
+          }}
         >
           Thêm Banner
         </Button>
       </div>
 
-      {loading ? (
-        <div className="flex justify-center p-8">
-          <Spin size="large" />
-        </div>
-      ) : (
-        <Table 
-          columns={columns} 
-          dataSource={banners}
-          rowKey="id"
-        />
-      )}
+      <Table
+        columns={columns}
+        dataSource={banners}
+        rowKey="id"
+        loading={loading}
+      />
 
       <Modal
-        title={`${editingBanner ? 'Sửa' : 'Thêm'} Banner`}
+        title={editingBanner ? 'Sửa Banner' : 'Thêm Banner mới'}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
@@ -217,7 +236,6 @@ const BannerManagement = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          initialValues={{ active: true }}
         >
           <Form.Item
             name="title"
@@ -251,30 +269,32 @@ const BannerManagement = () => {
           </Form.Item>
 
           <Form.Item
+            name="image"
             label="Hình ảnh"
+            rules={[{ required: !editingBanner, message: 'Vui lòng chọn hình ảnh' }]}
           >
             <Upload
-              {...uploadProps}
-              fileList={fileList}
               listType="picture-card"
+              fileList={fileList}
+              onChange={({ fileList }) => setFileList(fileList)}
+              beforeUpload={() => false}
+              maxCount={1}
             >
-              {fileList.length === 0 && (
-                <div>
-                  <UploadOutlined />
-                  <div className="mt-2">Tải ảnh lên</div>
-                </div>
-              )}
+              {fileList.length === 0 && <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>}
             </Upload>
           </Form.Item>
 
-          <Form.Item className="mb-0 text-right">
-            <Button onClick={() => setModalVisible(false)} className="mr-2">
+          <div className="flex justify-end space-x-4">
+            <Button onClick={() => setModalVisible(false)}>
               Hủy
             </Button>
             <Button type="primary" htmlType="submit">
               {editingBanner ? 'Cập nhật' : 'Thêm mới'}
             </Button>
-          </Form.Item>
+          </div>
         </Form>
       </Modal>
     </div>

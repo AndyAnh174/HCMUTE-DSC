@@ -12,10 +12,11 @@ const Login = () => {
   const onFinish = async (values: { username: string; password: string }) => {
     setLoading(true);
     try {
-      const response = await fetch('https://adjusted-some-suspected-yacht.trycloudflare.com/auth/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+
         },
         body: JSON.stringify(values),
       });

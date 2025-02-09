@@ -13,6 +13,8 @@ import { AuthProvider } from './hooks/useAuth.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/admin/Dashboard';
 import ProjectManagement from './pages/admin/ProjectManagement';
+import Documents from './pages/Documents';
+import DocumentManagement from './pages/admin/DocumentManagement';
 
 
 function App() {
@@ -39,6 +41,7 @@ function App() {
               <Route path="/projects" element={<MainLayout><Projects /></MainLayout>} />
               <Route path="/members" element={<MainLayout><Members /></MainLayout>} />
               <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+              <Route path="/documents" element={<MainLayout><Documents /></MainLayout>} />
               
               {/* Auth Routes */}
               <Route path="/admin/login" element={<Login />} />
@@ -60,6 +63,16 @@ function App() {
                   <ProtectedRoute requireAdmin>
                     <AdminLayout>
                       <ProjectManagement />
+                    </AdminLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/admin/documents" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminLayout>
+                      <DocumentManagement />
                     </AdminLayout>
                   </ProtectedRoute>
                 }

@@ -6,6 +6,8 @@ import Section, { SectionHeader } from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../config/env';
+
 
 interface Member {
   id: number;
@@ -37,6 +39,12 @@ const IconWrapper = ({ children }: { children: React.ReactNode }) => (
   </Suspense>
 );
 
+const getImageUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `${config.apiUrl}${path}`;
+};
+
 const MemberCard = ({ member, index, isHero = false }: { member: Member; index: number; isHero?: boolean }) => {
   const navigate = useNavigate();
 
@@ -61,7 +69,7 @@ const MemberCard = ({ member, index, isHero = false }: { member: Member; index: 
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="flex-none">
               <Avatar
-                src={member.avatar}
+                src={getImageUrl(member.avatar)}
                 alt={member.name}
                 size={200}
                 className="border-8 border-primary/10"
@@ -131,7 +139,7 @@ const MemberCard = ({ member, index, isHero = false }: { member: Member; index: 
       >
         <div className="flex-none flex justify-center mb-6">
           <Avatar
-            src={member.avatar}
+            src={getImageUrl(member.avatar)}
             alt={member.name}
             size={100}
             className="border-4 border-primary/10"
@@ -192,7 +200,7 @@ const Members = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('https://adjusted-some-suspected-yacht.trycloudflare.com/members');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/members`);
         const result = await response.json();
         if (response.ok) {
           setMembers(result.data);
@@ -246,7 +254,11 @@ const Members = () => {
   return (
     <Section>
       <SectionHeader
-        title="Thành viên"
+        title={
+          <>
+            Thành viên <span className="text-primary">DSC</span>
+          </>
+        }
         subtitle="Gặp gỡ những thành viên tài năng của DSC UTE"
       />
 
