@@ -514,7 +514,10 @@ const ProjectManagement = () => {
                         >
                           {form.getFieldValue(['teamMembers', index, 'avatar']) ? (
                             <img 
-                              src={form.getFieldValue(['teamMembers', index, 'avatar'])} 
+                              src={form.getFieldValue(['teamMembers', index, 'avatar']).startsWith('http') 
+                                ? form.getFieldValue(['teamMembers', index, 'avatar'])
+                                : `${config.apiUrl}${form.getFieldValue(['teamMembers', index, 'avatar'])}`
+                              } 
                               alt="avatar" 
                               style={{ width: '100%' }} 
                             />

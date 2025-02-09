@@ -42,7 +42,8 @@ const IconWrapper = ({ children }: { children: React.ReactNode }) => (
   </Suspense>
 );
 
-const getProjectImageUrl = (path: string) => {
+const getImageUrl = (path: string) => {
+  if (!path) return '';
   if (path.startsWith('http')) {
     return path;
   }
@@ -169,7 +170,7 @@ const Projects = () => {
                   <div className="relative h-48">
                     <img
                       alt={project.title}
-                      src={getProjectImageUrl(project.image)}
+                      src={getImageUrl(project.image)}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
@@ -288,7 +289,7 @@ const Projects = () => {
           <div className="space-y-6">
             <div className="aspect-video rounded-lg overflow-hidden">
               <img 
-                src={getProjectImageUrl(selectedProject.image)} 
+                src={getImageUrl(selectedProject.image)} 
                 alt={selectedProject.title}
                 className="w-full h-full object-cover"
               />
@@ -323,7 +324,7 @@ const Projects = () => {
                 <div className="flex flex-wrap gap-4">
                   {selectedProject.teamMembers.map((member, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <Avatar src={member.avatar} />
+                      <Avatar src={getImageUrl(member.avatar)} />
                       <div>
                         <div className="font-medium">{member.name}</div>
                         <div className="text-sm text-gray-500">{member.role}</div>
