@@ -129,7 +129,7 @@ const Projects = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Dự Án <span className="text-primary">DSC UTE</span>
+            Dự Án <span className="text-primary">DSC</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Khám phá các dự án thực tế mà chúng tôi đang phát triển tại DSC UTE, 
