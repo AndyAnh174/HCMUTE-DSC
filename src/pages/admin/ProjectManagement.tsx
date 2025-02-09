@@ -209,8 +209,9 @@ const ProjectManagement = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setImageUrl(result.data.url);
-        form.setFieldsValue({ image: result.data.url });
+        const fullImageUrl = result.data.url;
+        setImageUrl(fullImageUrl);
+        form.setFieldsValue({ image: fullImageUrl });
         onSuccess(result, file);
       } else {
         throw new Error(result.message || 'Upload failed');
@@ -393,7 +394,11 @@ const ProjectManagement = () => {
                 }}
               >
                 {imageUrl ? (
-                  <img src={imageUrl} alt="project" style={{ width: '100%' }} />
+                  <img 
+                    src={imageUrl.startsWith('http') ? imageUrl : `${config.apiUrl}${imageUrl}`} 
+                    alt="project" 
+                    style={{ width: '100%' }} 
+                  />
                 ) : (
                   <div>
                     {uploading ? <LoadingOutlined /> : <PlusOutlined />}

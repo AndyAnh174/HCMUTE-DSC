@@ -42,6 +42,13 @@ const IconWrapper = ({ children }: { children: React.ReactNode }) => (
   </Suspense>
 );
 
+const getProjectImageUrl = (path: string) => {
+  if (path.startsWith('http')) {
+    return path;
+  }
+  return `${config.apiUrl}${path}`;
+};
+
 const Projects = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [projects, setProjects] = useState<Project[]>([]);
@@ -162,7 +169,7 @@ const Projects = () => {
                   <div className="relative h-48">
                     <img
                       alt={project.title}
-                      src={project.image}
+                      src={getProjectImageUrl(project.image)}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
@@ -281,7 +288,7 @@ const Projects = () => {
           <div className="space-y-6">
             <div className="aspect-video rounded-lg overflow-hidden">
               <img 
-                src={selectedProject.image} 
+                src={getProjectImageUrl(selectedProject.image)} 
                 alt={selectedProject.title}
                 className="w-full h-full object-cover"
               />
