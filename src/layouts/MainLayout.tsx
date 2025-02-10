@@ -22,7 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              © {new Date().getFullYear()} HCM UTE Developer Student Club. All rights reserved.
+              © {new Date().getFullYear()} HCMUTE Developer Student Club. All rights reserved.
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a

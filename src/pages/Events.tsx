@@ -176,10 +176,10 @@ const Events = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Sự Kiện <span className="text-primary">DSC UTE</span>
+            Sự Kiện
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Tham gia các sự kiện hấp dẫn của chúng tôi để học hỏi, chia sẻ và kết nối 
+            Tham gia các sự kiện hấp dẫn của <span className="text-primary">HCMUTE Developer Student Club</span> để học hỏi, chia sẻ và kết nối 
             với cộng đồng công nghệ tại UTE.
           </p>
         </motion.div>

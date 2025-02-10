@@ -1,12 +1,13 @@
-import { useState, useEffect, Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { Card, Avatar, Tag, Divider, message } from 'antd';
+import { useState, useEffect, Suspense, useCallback, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, Avatar, Tag, Divider, message, Input } from 'antd';
 import { IconBrandFacebook, IconBrandGithub, IconMail } from '../utils/icons';
 import Section, { SectionHeader } from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { useNavigate } from 'react-router-dom';
 import { config } from '../config/env';
+import { SearchOutlined } from '@ant-design/icons';
 
 
 interface Member {
@@ -45,14 +46,14 @@ const getImageUrl = (path: string) => {
   return `${config.apiUrl}${path}`;
 };
 
-const MemberCard = ({ member, index, isHero = false }: { member: Member; index: number; isHero?: boolean }) => {
+const MemberCard = memo(({ member, index, isHero = false }: { member: Member; index: number; isHero?: boolean }) => {
   const navigate = useNavigate();
 
-  const handleRoleClick = () => {
+  const handleRoleClick = useCallback(() => {
     if (member.role === 'Leader CLB HCMUTEDSC' && member.year === '2024-2025') {
       navigate('/admin/login');
     }
-  };
+  }, [member.role, member.year, navigate]);
 
   if (isHero) {
     return (
@@ -123,9 +124,14 @@ const MemberCard = ({ member, index, isHero = false }: { member: Member; index: 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ 
+        opacity: { duration: 0.2 },
+        layout: { duration: 0.3 }
+      }}
       className="h-full"
     >
       <Card
@@ -190,12 +196,43 @@ const MemberCard = ({ member, index, isHero = false }: { member: Member; index: 
       </Card>
     </motion.div>
   );
-};
+});
+
+const SearchInput = memo(({ value, onChange }: { 
+  value: string; 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void 
+}) => (
+  <Input
+    placeholder="Tìm kiếm thành viên..."
+    prefix={<SearchOutlined className="text-gray-400 text-xl" />}
+    allowClear
+    size="large"
+    value={value}
+    onChange={onChange}
+    className="rounded-xl shadow-lg hover:shadow-xl transition-shadow text-lg py-3"
+    autoFocus
+  />
+));
+
+const GridSection = memo(({ members }: { members: Member[] }) => (
+  <Grid>
+    <AnimatePresence mode="wait">
+      {members.map((member, index) => (
+        <MemberCard
+          key={member.id}
+          member={member}
+          index={index}
+        />
+      ))}
+    </AnimatePresence>
+  </Grid>
+));
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -218,13 +255,24 @@ const Members = () => {
     fetchMembers();
   }, []);
 
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
   const currentLeader = members.find(
     member => member.role === 'Leader CLB HCMUTEDSC' && member.year === '2024-2025'
   );
 
-  const filteredMembers = activeTab === 'all'
-    ? members.filter(m => m !== currentLeader)
-    : members.filter(m => m.team === activeTab && m !== currentLeader);
+  const getFilteredMembers = useCallback(() => {
+    return members
+      .filter(m => m !== currentLeader)
+      .filter(m => activeTab === 'all' || m.team === activeTab)
+      .filter(m => 
+        m.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+      );
+  }, [members, currentLeader, activeTab, searchQuery]);
+
+  const filteredMembers = getFilteredMembers();
 
   if (loading) {
     return (
@@ -253,10 +301,21 @@ const Members = () => {
 
   return (
     <Section>
-      <SectionHeader
-        title="Thành viên DSC"
-        subtitle="Gặp gỡ những thành viên tài năng của DSC UTE"
-      />
+      <div className="pt-8 pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Thành viên
+          </h1>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Gặp gỡ những thành viên tài năng của <span className="text-primary"> HCMUTE Developer Student Club.</span>
+          </p>
+        </motion.div>
+      </div>
 
       {currentLeader && (
         <MemberCard
@@ -266,21 +325,35 @@ const Members = () => {
         />
       )}
 
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
-
-      <Grid>
-        {filteredMembers.map((member, index) => (
-          <MemberCard
-            key={member.id}
-            member={member}
-            index={index}
+      <div className="space-y-6">
+        <div className="max-w-2xl mx-auto">
+          <SearchInput 
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
-        ))}
-      </Grid>
+        </div>
+
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
+      </div>
+
+      {filteredMembers.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="text-center py-16 bg-gray-50 rounded-xl mt-8"
+        >
+          <div className="text-gray-400 text-xl">
+            Không tìm thấy thành viên nào
+          </div>
+        </motion.div>
+      ) : (
+        <GridSection members={filteredMembers} />
+      )}
     </Section>
   );
 };

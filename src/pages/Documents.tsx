@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Card, Input, Tree, Tag, Button, message, Spin, Breadcrumb } from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Card, Input, Tree, Tag, Button, message, Spin, Breadcrumb, Pagination } from 'antd';
 import { DownloadOutlined, SearchOutlined, HomeOutlined, FolderOutlined, FileOutlined } from '@ant-design/icons';
 import Section from '../components/ui/Section';
 import { config } from '../config/env';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Document {
   id: number;
@@ -97,6 +97,8 @@ const Documents = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<{title: string, path?: string}>>([
     { title: 'Tài liệu' }
   ]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   useEffect(() => {
     fetchDocuments();
@@ -130,14 +132,29 @@ const Documents = () => {
     }
   };
 
-  const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchText.toLowerCase()) ||
-                         doc.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || 
-                           doc.category === selectedCategory ||
-                           doc.subCategory === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  }, []);
+
+  const getFilteredDocuments = useCallback(() => {
+    const filtered = documents.filter(doc => {
+      const matchesSearch = doc.title.toLowerCase().includes(searchText.toLowerCase()) ||
+                          doc.description.toLowerCase().includes(searchText.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || 
+                            doc.category === selectedCategory ||
+                            doc.subCategory === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return {
+      total: filtered.length,
+      items: filtered.slice(startIndex, endIndex)
+    };
+  }, [documents, searchText, selectedCategory, currentPage]);
+
+  const { total, items: filteredDocs } = getFilteredDocuments();
 
   const updateBreadcrumbs = (selectedKey: string) => {
     const newBreadcrumbs = [{ title: 'Tài liệu' }];
@@ -173,9 +190,69 @@ const Documents = () => {
     }
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({
+      top: document.querySelector('.documents-list')?.getBoundingClientRect().top! + window.scrollY - 100,
+      behavior: 'smooth'
+    });
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchText, selectedCategory]);
+
+  // Tách phần render card ra thành component riêng để tránh re-render
+  const DocumentCard = ({ doc }: { doc: Document }) => (
+    <motion.div
+      key={doc.id}
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Card 
+        className="hover:shadow-xl transition-all transform hover:-translate-y-1 duration-200"
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex-grow">
+            <h3 className="text-2xl font-semibold mb-3 text-gray-800">{doc.title}</h3>
+            <p className="text-gray-600 mb-4 text-lg">{doc.description}</p>
+            <div className="flex items-center space-x-4">
+              <Tag color="blue" className="px-3 py-1 text-base">{doc.fileType}</Tag>
+              <span className="text-gray-500">{doc.fileSize}</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-500">{doc.downloads} lượt tải</span>
+            </div>
+          </div>
+          <Button
+            type="primary"
+            size="large"
+            icon={<DownloadOutlined />}
+            onClick={() => handleDownload(doc)}
+            className="flex items-center"
+          >
+            Tải xuống
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
+  );
+
+  // Tách phần search input ra thành component riêng
+  const SearchInput = () => (
+    <Input
+      placeholder="Tìm kiếm tài liệu..."
+      prefix={<SearchOutlined className="text-gray-400 text-xl" />}
+      allowClear
+      size="large"
+      value={searchText}
+      onChange={handleSearch}
+      className="rounded-xl shadow-lg hover:shadow-xl transition-shadow text-lg py-3"
+      autoFocus // Thêm prop này
+    />
+  );
 
   if (loading) {
     return (
@@ -194,23 +271,15 @@ const Documents = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Tài liệu <span className="text-primary">DSC</span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Tài liệu 
           </h1>
           <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
-            Khám phá kho tài nguyên học tập và phát triển của DSC UTE. 
+            Khám phá kho tài nguyên học tập và phát triển của<span className="text-primary"> HCMUTE Developer Student Club</span>. 
             Tất cả tài liệu được tuyển chọn và cập nhật thường xuyên.
           </p>
           <div className="max-w-2xl mx-auto">
-            <Input
-              placeholder="Tìm kiếm tài liệu..."
-              prefix={<SearchOutlined className="text-gray-400 text-xl" />}
-              allowClear
-              size="large"
-              value={searchText}
-              onChange={handleSearch}
-              className="rounded-xl shadow-lg hover:shadow-xl transition-shadow text-lg py-3"
-            />
+            <SearchInput />
           </div>
         </motion.div>
       </Section>
@@ -260,43 +329,39 @@ const Documents = () => {
           </div>
 
           <div className="lg:col-span-3">
-            <div className="grid gap-6">
-              {filteredDocuments.map((doc) => (
-                <Card 
-                  key={doc.id} 
-                  className="hover:shadow-xl transition-all transform hover:-translate-y-1 duration-200"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-grow">
-                      <h3 className="text-2xl font-semibold mb-3 text-gray-800">{doc.title}</h3>
-                      <p className="text-gray-600 mb-4 text-lg">{doc.description}</p>
-                      <div className="flex items-center space-x-4">
-                        <Tag color="blue" className="px-3 py-1 text-base">{doc.fileType}</Tag>
-                        <span className="text-gray-500">{doc.fileSize}</span>
-                        <span className="text-gray-400">•</span>
-                        <span className="text-gray-500">{doc.downloads} lượt tải</span>
-                      </div>
+            <div className="grid gap-6 documents-list">
+              <AnimatePresence mode="wait">
+                {total === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center py-16 bg-gray-50 rounded-xl"
+                  >
+                    <div className="text-gray-400 text-xl">
+                      Không tìm thấy tài liệu nào
                     </div>
-                    <Button
-                      type="primary"
-                      size="large"
-                      icon={<DownloadOutlined />}
-                      onClick={() => handleDownload(doc)}
-                      className="flex items-center"
-                    >
-                      Tải xuống
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-
-              {filteredDocuments.length === 0 && (
-                <div className="text-center py-16 bg-gray-50 rounded-xl">
-                  <div className="text-gray-400 text-xl">
-                    Không tìm thấy tài liệu nào
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                ) : (
+                  <>
+                    {filteredDocs.map((doc) => (
+                      <DocumentCard key={doc.id} doc={doc} />
+                    ))}
+                    
+                    <div className="flex justify-center mt-8">
+                      <Pagination
+                        current={currentPage}
+                        total={total}
+                        pageSize={pageSize}
+                        onChange={handlePageChange}
+                        showSizeChanger={false}
+                        className="text-center"
+                      />
+                    </div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>

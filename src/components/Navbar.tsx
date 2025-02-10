@@ -63,10 +63,6 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <img src={LogoCLB} alt="DSC Logo" className="h-24 w-auto" />
-            <div className="flex flex-col justify-center">
-              <span className="font-bold text-base block nav-text text-white">DSC HCM UTE</span>
-              <span className="text-[10px] font-semibold text-secondary-100 nav-text">Developer Student Clubs</span>
-            </div>
           </Link>
 
           {/* Desktop Menu */}
