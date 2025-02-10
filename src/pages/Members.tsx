@@ -46,7 +46,7 @@ const getImageUrl = (path: string) => {
   return `${config.apiUrl}${path}`;
 };
 
-const MemberCard = memo(({ member, index, isHero = false }: { member: Member; index: number; isHero?: boolean }) => {
+const MemberCard = memo(({ member, isHero = false }: { member: Member; index: number; isHero?: boolean }) => {
   const navigate = useNavigate();
 
   const handleRoleClick = useCallback(() => {
