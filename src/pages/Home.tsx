@@ -87,18 +87,17 @@ const Home = () => {
                 transition={{ duration: 0.6 }}
               >
                 <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                  Welcome to{' '}
-                  <span className="text-[#EA4335]">HCM</span>
-                  <br />
-                  <span className="text-[#EA4335]">UTE Developer</span>
+                  Chào mừng đến với {' '}
+                  <span className="text-[#EA4335]">HCM UTE Developer</span>
                   <br />
                   <span className="text-[#EA4335]">Student Club</span>
+                  <br />
+                  <span className="text-[#EA4335]">(Câu lạc bộ Sinh viên Lập trình HCMUTE)</span>
                 </h1>
                 <p className="text-lg text-gray-600 mb-8">
-                  Join our community of passionate developers and tech enthusiasts.
+                  Hãy tham gia cộng đồng của chúng tôi – nơi quy tụ những nhà phát triển đầy đam mê và những người yêu công nghệ!
                   <br />
-                  Learn, build, and grow together with Google technologies.
-                </p>
+                  Học hỏi, sáng tạo và phát triển cùng nhau với những công nghệ mới nhất.                </p>
                 <div className="flex flex-wrap gap-4">
                   <Button
                     type="primary"
@@ -106,14 +105,14 @@ const Home = () => {
                     icon={<IconUsers className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/members">Join Us</Link>
+                    <Link to="https://www.facebook.com/hcmute.dsc">Tham gia</Link>
                   </Button>
                   <Button
                     size="large"
                     icon={<IconCode className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/projects">View Projects</Link>
+                    <Link to="/projects">Dự án</Link>
                   </Button>
                 </div>
               </motion.div>
@@ -181,18 +180,18 @@ const Home = () => {
               <IconWrapper>
                 <IconCode className="text-secondary w-12 h-12 mb-4" />
               </IconWrapper>
-              <h3 className="text-xl font-semibold mb-3">Hands-on Projects</h3>
+              <h3 className="text-xl font-semibold mb-3">Dự án ứng dụng thực tiễn</h3>
               <p className="text-gray-600">
-                Build real-world projects and gain practical experience.
+               Xây dựng các dự án thực tế và tích lũy kinh nghiệm thực tiễn.
               </p>
             </div>
             <div className="p-6 bg-white rounded-lg shadow-lg">
               <IconWrapper>
                 <IconUsers className="text-accent w-12 h-12 mb-4" />
               </IconWrapper>
-              <h3 className="text-xl font-semibold mb-3">Community</h3>
+              <h3 className="text-xl font-semibold mb-3">Cộng đồng</h3>
               <p className="text-gray-600">
-                Connect with like-minded developers and grow together.
+               Kết nối với các nhà phát triển cùng chí hướng và cùng nhau phát triển.
               </p>
             </div>
           </motion.div>
@@ -210,14 +209,14 @@ const Home = () => {
             className="text-center"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Start Your Journey?
+              Bạn đã sẵn sàng bắt đầu chuyến hành chình của mình chưa?
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Join our community today and embark on an exciting journey of
-              learning, innovation, and growth.
+            Tham gia cộng đồng của chúng tôi ngay hôm nay và bắt đầu một hành trình 
+            đầy thú vị với học tập, đổi mới và phát triển!
             </p>
             <Button type="primary" size="large">
-              Get Started Now
+              Bắt đầu ngay bây giờ
             </Button>
           </motion.div>
         </div>
