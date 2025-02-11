@@ -156,7 +156,7 @@ const ProjectDetail = () => {
                       target="_blank"
                       className="h-12"
                     >
-                      Live Demo
+                      Live
                     </Button>
                   )}
                 </div>

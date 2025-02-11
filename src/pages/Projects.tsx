@@ -1,6 +1,6 @@
 import { useState, Suspense, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Card, Tag, Button, Progress, Modal, Spin, Avatar } from 'antd';
+import { Card, Button, Progress, Spin } from 'antd';
 import { IconBrandGithub, IconExternalLink, IconUsers } from '../utils/icons';
 import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
