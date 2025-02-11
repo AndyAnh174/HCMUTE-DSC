@@ -71,6 +71,7 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={() => window.scrollTo(0, 0)}
                 className={`
                   relative px-3 py-2 rounded-lg text-sm font-semibold nav-text
                   transition-colors duration-200
@@ -97,9 +98,6 @@ const Navbar = () => {
           <div className="hidden lg:block">
             <Button 
               type="default" 
-              href="https://www.facebook.com/hcmute.dsc" 
-              target="_blank"
-              rel="noopener noreferrer"
               size="large" 
               className="px-6 nav-text font-semibold bg-white text-secondary hover:bg-white/90"
               onClick={() => window.open('https://www.facebook.com/hcmute.dsc', '_blank')}
