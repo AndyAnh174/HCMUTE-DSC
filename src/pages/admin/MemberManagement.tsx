@@ -121,7 +121,7 @@ const FilterControls = memo(({
   </Space>
 ));
 
-const ExportModal = memo(({ visible, onCancel, onExport, loading, totalMembers }: ExportModalProps) => {
+const ExportModal = memo(({ visible, onCancel, onExport, loading }: ExportModalProps) => {
   const [form] = Form.useForm();
 
   const handleExport = () => {
