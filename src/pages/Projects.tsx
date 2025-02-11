@@ -54,8 +54,6 @@ const Projects = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
 
   // Fetch projects from API
   useEffect(() => {
@@ -87,12 +85,6 @@ const Projects = () => {
 
     fetchProjects();
   }, []);
-
-  const handleProjectClick = (project: Project) => {
-    console.log('Project clicked:', project);
-    setSelectedProject(project);
-    setModalVisible(true);
-  };
 
   const filteredProjects = projects.filter(
     project => activeTab === 'all' || project.category === activeTab
@@ -163,27 +155,16 @@ const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="h-full cursor-pointer"
-              onClick={() => handleProjectClick(project)}
             >
               <Card
                 cover={
-                  <div className="relative h-48">
+                  <Link to={`/projects/${project.id}`}>
                     <img
                       alt={project.title}
                       src={getImageUrl(project.image)}
-                      className="w-full h-full object-cover"
+                      className="h-48 w-full object-cover"
                     />
-                    <div className="absolute top-4 left-4 flex gap-2 flex-wrap">
-                      {project.technologies.map(tech => (
-                        <Tag
-                          key={tech}
-                          className="px-3 py-1 text-sm font-medium rounded-full bg-white/80 backdrop-blur-sm"
-                        >
-                          {tech}
-                        </Tag>
-                      ))}
-                    </div>
-                  </div>
+                  </Link>
                 }
                 className="h-full flex flex-col shadow-lg hover:shadow-xl transition-all duration-300"
                 bodyStyle={{ 
@@ -193,14 +174,13 @@ const Projects = () => {
                   padding: '24px',
                 }}
               >
-                <h3 className="text-xl font-semibold mb-4 line-clamp-2 flex-none">
-                  {project.title}
-                </h3>
+                <Link to={`/projects/${project.id}`}>
+                  <Card.Meta
+                    title={project.title}
+                    description={project.description}
+                  />
+                </Link>
                 
-                <p className="text-gray-600 mb-6 line-clamp-3 flex-1">
-                  {project.description}
-                </p>
-
                 <div className="space-y-4 flex-none">
                   <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>Tiến độ</span>
@@ -240,7 +220,7 @@ const Projects = () => {
                         target="_blank"
                         className="flex-1 h-10 flex items-center justify-center"
                       >
-                        Demo
+                        Live
                       </Button>
                     )}
                   </div>
@@ -276,87 +256,6 @@ const Projects = () => {
           </Button>
         </motion.div>
       </Section>
-
-      {/* Project Details Modal */}
-      <Modal
-        title={selectedProject?.title}
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        width={800}
-        footer={null}
-      >
-        {selectedProject && (
-          <div className="space-y-6">
-            <div className="aspect-video rounded-lg overflow-hidden">
-              <img 
-                src={getImageUrl(selectedProject.image)} 
-                alt={selectedProject.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Mô tả chi tiết</h3>
-              <p className="text-gray-600 whitespace-pre-line">
-                {selectedProject.details || selectedProject.description}
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Công nghệ sử dụng</h3>
-              <div className="flex flex-wrap gap-2">
-                {selectedProject.technologies.map(tech => (
-                  <Tag key={tech} className="px-3 py-1">
-                    {tech}
-                  </Tag>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Tiến độ dự án</h3>
-              <Progress percent={selectedProject.progress} />
-            </div>
-
-            {selectedProject.teamMembers && selectedProject.teamMembers.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Thành viên</h3>
-                <div className="flex flex-wrap gap-4">
-                  {selectedProject.teamMembers.map((member, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <Avatar src={getImageUrl(member.avatar)} />
-                      <div>
-                        <div className="font-medium">{member.name}</div>
-                        <div className="text-sm text-gray-500">{member.role}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="primary"
-                icon={<IconBrandGithub size={18} />}
-                href={selectedProject.links.github}
-                target="_blank"
-              >
-                GitHub Repository
-              </Button>
-              {selectedProject.links.demo && (
-                <Button
-                  icon={<IconExternalLink size={18} />}
-                  href={selectedProject.links.demo}
-                  target="_blank"
-                >
-                  Live Demo
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };
