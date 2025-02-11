@@ -1,11 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Select, Tag, message, Avatar, Divider, Upload } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@ant-design/icons';
+import { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { Card, Table, Button, Modal, Form, Input, Select, Tag, message, Avatar, Divider, Upload, Input as AntInput, Space } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import type { RcFile } from 'antd/es/upload/interface';
 import { config } from '../../config/env';
+import debounce from 'lodash.debounce';
+import * as XLSX from 'xlsx';
+import FileSaver from 'file-saver';
 
 const { confirm } = Modal;
+const { Search } = AntInput;
+const { Option } = Select;
 
 interface Member {
   id: number;
@@ -15,6 +20,8 @@ interface Member {
   team: string;
   department: string;
   year?: string;
+  joinYear: string;
+  status: 'active' | 'inactive';
   skills: string[];
   links: {
     facebook: string;
@@ -23,13 +30,214 @@ interface Member {
   };
 }
 
-const { Option } = Select;
+interface ExportModalProps {
+  visible: boolean;
+  onCancel: () => void;
+  onExport: (filters: ExportFilters) => void;
+  loading: boolean;
+  totalMembers: number;
+}
+
+interface ExportFilters {
+  team?: string;
+  status?: string;
+  year?: string;
+  joinYear?: string;
+  fields: string[];
+  fileType: 'xlsx' | 'csv';
+}
 
 const getImageUrl = (path: string) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
   return `${config.apiUrl}${path}`;
 };
+
+const FilterControls = memo(({
+  searchText,
+  filterTeam,
+  filterYear,
+  filterStatus,
+  onSearchChange,
+  onTeamChange,
+  onYearChange,
+  onStatusChange
+}: {
+  searchText: string;
+  filterTeam: string;
+  filterYear: string;
+  filterStatus: string;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onTeamChange: (value: string) => void;
+  onYearChange: (value: string) => void;
+  onStatusChange: (value: string) => void;
+}) => (
+  <Space className="mb-4">
+    <Search
+      placeholder="Tìm kiếm theo tên, vai trò..."
+      allowClear
+      style={{ width: 300 }}
+      value={searchText}
+      onChange={onSearchChange}
+    />
+    
+    <Select 
+      placeholder="Lọc theo team"
+      allowClear
+      style={{ width: 200 }}
+      value={filterTeam}
+      onChange={onTeamChange}
+    >
+      <Option value="lead">Lead Team</Option>
+      <Option value="academic">Học thuật</Option>
+      <Option value="event">Sự kiện</Option>
+      <Option value="media">Truyền thông</Option>
+    </Select>
+
+    <Select
+      placeholder="Lọc theo năm"
+      allowClear
+      style={{ width: 200 }}
+      value={filterYear}
+      onChange={onYearChange}
+    >
+      <Option value="2024-2025">2024-2025</Option>
+      <Option value="2023-2024">2023-2024</Option>
+      <Option value="2022-2023">2022-2023</Option>
+      <Option value="2021-2022">2021-2022</Option>
+      <Option value="2020-2021">2020-2021</Option>
+    </Select>
+
+    <Select
+      placeholder="Trạng thái"
+      allowClear
+      style={{ width: 200 }}
+      value={filterStatus}
+      onChange={onStatusChange}
+    >
+      <Option value="active">Còn hoạt động</Option>
+      <Option value="inactive">Hết hoạt động</Option>
+    </Select>
+  </Space>
+));
+
+const ExportModal = memo(({ visible, onCancel, onExport, loading, totalMembers }: ExportModalProps) => {
+  const [form] = Form.useForm();
+
+  const handleExport = () => {
+    form.validateFields().then(values => {
+      onExport(values);
+    });
+  };
+
+  return (
+    <Modal
+      title="Xuất danh sách thành viên"
+      open={visible}
+      onCancel={onCancel}
+      onOk={handleExport}
+      confirmLoading={loading}
+      width={600}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={{
+          fields: ['name', 'role', 'department', 'team', 'joinYear', 'status'],
+          fileType: 'xlsx'
+        }}
+      >
+        <Form.Item
+          name="team"
+          label="Lọc theo team"
+        >
+          <Select allowClear>
+            <Option value="lead">Lead Team</Option>
+            <Option value="academic">Học thuật</Option>
+            <Option value="event">Sự kiện</Option>
+            <Option value="media">Truyền thông</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="status"
+          label="Lọc theo trạng thái"
+        >
+          <Select allowClear>
+            <Option value="active">Còn hoạt động</Option>
+            <Option value="inactive">Hết hoạt động</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="year"
+          label="Lọc theo năm nhiệm kỳ"
+        >
+          <Select allowClear>
+            <Option value="2024-2025">2024-2025</Option>
+            <Option value="2023-2024">2023-2024</Option>
+            <Option value="2022-2023">2022-2023</Option>
+            <Option value="2021-2022">2021-2022</Option>
+            <Option value="2020-2021">2020-2021</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="joinYear"
+          label="Lọc theo năm tham gia"
+        >
+          <Select allowClear>
+            {Array.from({ length: 5 }, (_, i) => {
+              const year = new Date().getFullYear() - i;
+              return (
+                <Option key={year} value={year.toString()}>
+                  {year}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="fields"
+          label="Chọn các trường xuất"
+          rules={[{ required: true, message: 'Vui lòng chọn ít nhất một trường' }]}
+        >
+          <Select
+            mode="multiple"
+            placeholder="Chọn các trường cần xuất"
+          >
+            <Option value="name">Tên thành viên</Option>
+            <Option value="role">Vai trò</Option>
+            <Option value="department">Phòng ban</Option>
+            <Option value="team">Team</Option>
+            <Option value="year">Năm nhiệm kỳ</Option>
+            <Option value="joinYear">Năm tham gia</Option>
+            <Option value="status">Trạng thái</Option>
+            <Option value="skills">Kỹ năng</Option>
+            <Option value="email">Email</Option>
+            <Option value="facebook">Facebook</Option>
+            <Option value="github">Github</Option>
+          </Select>
+        </Form.Item>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item
+            name="fileType"
+            label="Định dạng file"
+            rules={[{ required: true, message: 'Vui lòng chọn định dạng file' }]}
+          >
+            <Select>
+              <Option value="xlsx">Excel (XLSX)</Option>
+              <Option value="csv">CSV</Option>
+            </Select>
+          </Form.Item>
+
+        </div>
+      </Form>
+    </Modal>
+  );
+});
 
 const MemberManagement = () => {
   const [members, setMembers] = useState<Member[]>([]);
@@ -39,6 +247,13 @@ const MemberManagement = () => {
   const [form] = Form.useForm();
   const { token } = useAuth();
   const [imageUrl, setImageUrl] = useState<string>();
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText, setDebouncedSearchText] = useState('');
+  const [filterTeam, setFilterTeam] = useState<string>('');
+  const [filterYear, setFilterYear] = useState<string>('');
+  const [filterStatus, setFilterStatus] = useState<string>('');
+  const [exportModalVisible, setExportModalVisible] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
 
   const currentLeader = members.find(
     member => member.role === 'Leader CLB HCMUTEDSC' && member.year === '2024-2025'
@@ -101,6 +316,8 @@ const MemberManagement = () => {
         team: values.team.toLowerCase(),
         department: values.department,
         year: values.year || null,
+        joinYear: values.joinYear,
+        status: values.status,
         skills: skills,
         links: {
           facebook: values.facebook || 'https://facebook.com',
@@ -297,6 +514,21 @@ const MemberManagement = () => {
       key: 'year',
     },
     {
+      title: 'Năm tham gia',
+      dataIndex: 'joinYear',
+      key: 'joinYear',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => {
+        const color = status === 'active' ? 'green' : 'red';
+        const text = status === 'active' ? 'Còn hoạt động' : 'Hết hoạt động';
+        return <Tag color={color}>{text}</Tag>;
+      }
+    },
+    {
       title: 'Thao tác',
       key: 'actions',
       render: (_: any, record: Member) => (
@@ -318,6 +550,124 @@ const MemberManagement = () => {
     }
   ];
 
+  const debouncedSetSearch = useMemo(
+    () => debounce((text: string) => {
+      setDebouncedSearchText(text);
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
+    debouncedSetSearch(value);
+  }, [debouncedSetSearch]);
+
+  useEffect(() => {
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [debouncedSetSearch]);
+
+  const getFilteredMembers = useMemo(() => {
+    return otherMembers.filter(member => {
+      const matchSearch = member.name.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+                         member.role.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+                         member.department.toLowerCase().includes(debouncedSearchText.toLowerCase());
+      
+      const matchTeam = !filterTeam || member.team === filterTeam;
+      const matchYear = !filterYear || member.year === filterYear;
+      const matchStatus = !filterStatus || member.status === filterStatus;
+
+      return matchSearch && matchTeam && matchYear && matchStatus;
+    });
+  }, [otherMembers, debouncedSearchText, filterTeam, filterYear, filterStatus]);
+
+  const handleTeamChange = useCallback((value: string) => {
+    setFilterTeam(value);
+  }, []);
+
+  const handleYearChange = useCallback((value: string) => {
+    setFilterYear(value);
+  }, []);
+
+  const handleStatusChange = useCallback((value: string) => {
+    setFilterStatus(value);
+  }, []);
+
+  const filterControlsProps = useMemo(() => ({
+    searchText,
+    filterTeam,
+    filterYear,
+    filterStatus,
+    onSearchChange: handleSearchChange,
+    onTeamChange: handleTeamChange,
+    onYearChange: handleYearChange,
+    onStatusChange: handleStatusChange
+  }), [
+    searchText, 
+    filterTeam, 
+    filterYear, 
+    filterStatus,
+    handleSearchChange, 
+    handleTeamChange, 
+    handleYearChange,
+    handleStatusChange
+  ]);
+
+  const handleExport = async (filters: ExportFilters) => {
+    try {
+      setExportLoading(true);
+
+      const filteredData = members.filter(member => {
+        const matchTeam = !filters.team || member.team === filters.team;
+        const matchStatus = !filters.status || member.status === filters.status;
+        const matchYear = !filters.year || member.year === filters.year;
+        const matchJoinYear = !filters.joinYear || member.joinYear === filters.joinYear;
+        return matchTeam && matchStatus && matchYear && matchJoinYear;
+      });
+
+      const exportData = filteredData.map(member => {
+        const row: any = {};
+        filters.fields.forEach(field => {
+          if (field === 'skills') {
+            row[field] = member.skills.join(', ');
+          } else if (field === 'facebook' || field === 'github' || field === 'email') {
+            row[field] = member.links[field];
+          } else {
+            row[field] = member[field as keyof Member];
+          }
+        });
+        return row;
+      });
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(exportData);
+
+      XLSX.utils.book_append_sheet(wb, ws, 'Members');
+
+      if (filters.fileType === 'csv') {
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        const data = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        FileSaver.saveAs(data, `DSC_Members_${new Date().toISOString().slice(0,10)}.csv`);
+      } else {
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { 
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+        });
+        FileSaver.saveAs(data, `DSC_Members_${new Date().toISOString().slice(0,10)}.xlsx`);
+      }
+
+      message.success('Xuất file thành công');
+      setExportModalVisible(false);
+    } catch (error) {
+      console.error('Export error:', error);
+      message.error('Có lỗi xảy ra khi xuất file');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Leader Card */}
@@ -332,10 +682,20 @@ const MemberManagement = () => {
               <h3 className="text-xl font-semibold">{currentLeader.name}</h3>
               <p className="text-primary">{currentLeader.role}</p>
               <p className="text-gray-500">{currentLeader.department}</p>
-              <div className="mt-2">
-                {currentLeader.skills.map((skill, index) => (
-                  <Tag key={index} className="mr-1">{skill}</Tag>
-                ))}
+              <p className="text-gray-500">Tham gia từ: {currentLeader.joinYear}</p>
+              <div className="mt-2 space-y-2">
+                <div>
+                  {currentLeader.skills.map((skill, index) => (
+                    <Tag key={index} className="mr-1">{skill}</Tag>
+                  ))}
+                </div>
+                <div>
+                  <Tag 
+                    color={currentLeader.status === 'active' ? 'green' : 'red'}
+                  >
+                    {currentLeader.status === 'active' ? 'Còn hoạt động' : 'Hết hoạt động'}
+                  </Tag>
+                </div>
               </div>
             </div>
             <div className="ml-auto">
@@ -354,14 +714,28 @@ const MemberManagement = () => {
       <Card
         title="Quản lý thành viên"
         extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={showAddModal}>
-            Thêm thành viên
-          </Button>
+          <Space>
+            <Button 
+              icon={<DownloadOutlined />} 
+              onClick={() => setExportModalVisible(true)}
+            >
+              Xuất Excel
+            </Button>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />} 
+              onClick={showAddModal}
+            >
+              Thêm thành viên
+            </Button>
+          </Space>
         }
       >
+        <FilterControls {...filterControlsProps} />
+        
         <Table 
           columns={columns} 
-          dataSource={otherMembers}
+          dataSource={getFilteredMembers}
           rowKey="id"
           loading={loading}
         />
@@ -381,6 +755,7 @@ const MemberManagement = () => {
           initialValues={{
             team: 'academic',
             department: 'Học thuật',
+            status: 'active',
             skills: [],
             links: {
               facebook: 'https://facebook.com',
@@ -480,6 +855,34 @@ const MemberManagement = () => {
           </Form.Item>
 
           <Form.Item
+            name="joinYear"
+            label="Năm tham gia"
+            rules={[{ required: true, message: 'Vui lòng chọn năm tham gia' }]}
+          >
+            <Select>
+              {Array.from({ length: 10 }, (_, i) => {
+                const year = new Date().getFullYear() - i;
+                return (
+                  <Option key={year} value={year.toString()}>
+                    {year}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="status"
+            label="Trạng thái"
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+          >
+            <Select>
+              <Option value="active">Còn hoạt động</Option>
+              <Option value="inactive">Hết hoạt động</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
             name="skills"
             label="Kỹ năng"
             rules={[{ required: true, message: 'Vui lòng nhập các kỹ năng' }]}
@@ -520,6 +923,14 @@ const MemberManagement = () => {
           </div>
         </Form>
       </Modal>
+
+      <ExportModal
+        visible={exportModalVisible}
+        onCancel={() => setExportModalVisible(false)}
+        onExport={handleExport}
+        loading={exportLoading}
+        totalMembers={members.length}
+      />
     </div>
   );
 };
