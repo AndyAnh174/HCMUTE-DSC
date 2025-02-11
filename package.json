@@ -14,14 +14,19 @@
     "@types/node": "^22.10.5",
     "antd": "^5.22.7",
     "axios": "^1.7.9",
+    "file-saver": "^2.0.5",
     "framer-motion": "^10.18.0",
+    "lodash.debounce": "^4.0.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-intersection-observer": "^9.5.3",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.21.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/file-saver": "^2.0.7",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",

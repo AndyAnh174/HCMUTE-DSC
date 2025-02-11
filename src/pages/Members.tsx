@@ -264,12 +264,44 @@ const Members = () => {
   );
 
   const getFilteredMembers = useCallback(() => {
-    return members
+    const sortedMembers = members
       .filter(m => m !== currentLeader)
+      .sort((a, b) => {
+        // Tạo hàm tính điểm ưu tiên
+        const getPriorityScore = (member: Member) => {
+          let score = 0;
+          
+          // Lead Team có điểm cao nhất
+          if (member.team === 'lead') {
+            score += 100;
+          }
+          
+          // Technical Mentor có điểm cao thứ hai
+          if (member.role === 'Technical Mentor') {
+            score += 50;
+          }
+
+          // Sắp xếp theo năm nhiệm kỳ (mới nhất lên trước)
+          if (member.year) {
+            const yearNumber = parseInt(member.year.split('-')[0]);
+            score += yearNumber;
+          }
+
+          return score;
+        };
+
+        // So sánh điểm ưu tiên
+        const scoreA = getPriorityScore(a);
+        const scoreB = getPriorityScore(b);
+        
+        return scoreB - scoreA;
+      })
       .filter(m => activeTab === 'all' || m.team === activeTab)
       .filter(m => 
         m.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
       );
+
+    return sortedMembers;
   }, [members, currentLeader, activeTab, searchQuery]);
 
   const filteredMembers = getFilteredMembers();
