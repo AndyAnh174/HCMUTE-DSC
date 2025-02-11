@@ -27,8 +27,8 @@ const IconDeviceLaptop = lazy(() => import('@tabler/icons-react').then(module =>
 const IconFile = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconFile })));
 const IconFolder = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconFolder })));
 const IconDownload = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconDownload })));
-const IconSearch = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconSearch })));
-
+const IconUser = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconUser })));
+const IconLink = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconLink })));
 // Log để debug
 console.log('Loading icons:', {
   IconHome2,
@@ -58,7 +58,8 @@ console.log('Loading icons:', {
   IconFile,
   IconFolder,
   IconDownload,
-  IconSearch,
+  IconUser,
+  IconLink,
 });
 
 export {
@@ -89,5 +90,6 @@ export {
   IconFile,
   IconFolder,
   IconDownload,
-  IconSearch,
+  IconUser,
+  IconLink,
 };

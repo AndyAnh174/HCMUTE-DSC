@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Card, Tag, Button, message, Modal } from 'antd';
-import { IconCalendar, IconMapPin, IconUsers } from '../utils/icons';
+import { IconCalendar, IconMapPin } from '../utils/icons';
 import Section from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
@@ -23,6 +23,7 @@ interface Event {
   organizer: string;
   googleFormUrl: string;
   registered_ips: string[];
+  isHighlight: boolean;
 }
 
 const tabs = [
@@ -43,7 +44,7 @@ const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent] = useState<Event | null>(null);
   const [registering, setRegistering] = useState(false);
   const [userIp, setUserIp] = useState<string>('');
 
@@ -86,10 +87,10 @@ const Events = () => {
     event => activeTab === 'all' || event.status === activeTab
   );
 
-  const handleRegister = (event: Event) => {
-    setSelectedEvent(event);
-    setRegisterModalVisible(true);
-  };
+  const highlightedEvents = events.filter(event => 
+    event.isHighlight && event.status !== 'past'
+  );
+
 
   const handleConfirmRegistration = async () => {
     if (!selectedEvent) return;
@@ -130,9 +131,6 @@ const Events = () => {
     }
   };
 
-  const hasUserRegistered = (event: Event) => {
-    return event.registered_ips.includes(userIp);
-  };
 
   if (loading) {
     return (
@@ -185,7 +183,66 @@ const Events = () => {
         </motion.div>
       </Section>
 
-      {/* Events List Section */}
+      {/* Highlighted Events Section */}
+      {highlightedEvents.length > 0 && (
+        <Section className="py-12" gradient="secondary">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold mb-4">Sự kiện nổi bật</h2>
+            <p className="text-gray-600">Đừng bỏ lỡ những sự kiện đặc biệt sắp diễn ra</p>
+          </motion.div>
+
+          <Grid cols={2} gap={8}>
+            {highlightedEvents.map((event, index) => (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Link to={`/events/${event.id}`} className="block">
+                  <Card
+                    cover={
+                      <div className="relative h-64">
+                        <img
+                          alt={event.title}
+                          src={getImageUrl(event.image)}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-4 right-4">
+                          <Tag color="orange" className="px-3 py-1 text-sm font-medium rounded-full">
+                            Nổi bật
+                          </Tag>
+                        </div>
+                      </div>
+                    }
+                    className="h-full hover:shadow-xl transition-all duration-300"
+                  >
+                    <h3 className="text-2xl font-semibold mb-4">{event.title}</h3>
+                    <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                    <div className="space-y-2">
+                      <div className="flex items-center text-gray-600">
+                        <IconCalendar size={18} className="mr-2 text-primary" />
+                        <span>{event.date} | {event.time}</span>
+                      </div>
+                      <div className="flex items-center text-gray-600">
+                        <IconMapPin size={18} className="mr-2 text-primary" />
+                        <span className="line-clamp-1">{event.location}</span>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </Grid>
+        </Section>
+      )}
+
+      {/* Regular Events List */}
       <Section className="py-12">
         <Tabs
           tabs={tabs}
@@ -201,89 +258,64 @@ const Events = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="h-full"
             >
-              <Card
-                cover={
-                  <div className="relative h-48">
-                    <img
-                      alt={event.title}
-                      src={getImageUrl(event.image)}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-4 right-4">
-                      <Tag 
-                        color={
-                          event.status === 'upcoming' ? 'green' :
-                          event.status === 'ongoing' ? 'blue' :
-                          'default'
-                        }
-                        className="px-3 py-1 text-sm font-medium rounded-full"
-                      >
-                        {event.status === 'upcoming' ? 'Sắp diễn ra' :
-                         event.status === 'ongoing' ? 'Đang diễn ra' :
-                         'Đã kết thúc'}
-                      </Tag>
+              <Link to={`/events/${event.id}`}>
+                <Card
+                  cover={
+                    <div className="relative h-48">
+                      <img
+                        alt={event.title}
+                        src={getImageUrl(event.image)}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-4 right-4">
+                        <Tag 
+                          color={
+                            event.status === 'upcoming' ? 'green' :
+                            event.status === 'ongoing' ? 'blue' :
+                            'default'
+                          }
+                          className="px-3 py-1 text-sm font-medium rounded-full"
+                        >
+                          {event.status === 'upcoming' ? 'Sắp diễn ra' :
+                           event.status === 'ongoing' ? 'Đang diễn ra' :
+                           'Đã kết thúc'}
+                        </Tag>
+                      </div>
+                    </div>
+                  }
+                  className="h-full hover:shadow-xl transition-all duration-300"
+                  bodyStyle={{ 
+                    flex: 1, 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    padding: '24px',
+                  }}
+                >
+                  <h3 className="text-xl font-semibold mb-4 line-clamp-2 flex-none">
+                    {event.title}
+                  </h3>
+                  
+                  <div className="space-y-3 mb-4 flex-none">
+                    <div className="flex items-center text-gray-600">
+                      <IconWrapper>
+                        <IconCalendar size={18} className="mr-2 text-primary" />
+                      </IconWrapper>
+                      <span className="text-sm">{event.date} | {event.time}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <IconWrapper>
+                        <IconMapPin size={18} className="mr-2 text-primary" />
+                      </IconWrapper>
+                      <span className="text-sm line-clamp-1">{event.location}</span>
                     </div>
                   </div>
-                }
-                className="h-full flex flex-col shadow-lg hover:shadow-xl transition-all duration-300"
-                bodyStyle={{ 
-                  flex: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  padding: '24px',
-                }}
-              >
-                <h3 className="text-xl font-semibold mb-4 line-clamp-2 flex-none">
-                  {event.title}
-                </h3>
-                
-                <div className="space-y-3 mb-4 flex-none">
-                  <div className="flex items-center text-gray-600">
-                    <IconWrapper>
-                      <IconCalendar size={18} className="mr-2 text-primary" />
-                    </IconWrapper>
-                    <span className="text-sm">{event.date} | {event.time}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600">
-                    <IconWrapper>
-                      <IconMapPin size={18} className="mr-2 text-primary" />
-                    </IconWrapper>
-                    <span className="text-sm line-clamp-1">{event.location}</span>
-                  </div>
-                </div>
 
-                <p className="text-gray-600 mb-6 line-clamp-3 flex-1">
-                  {event.description}
-                </p>
-
-                <div className="flex-none">
-                  <Button 
-                    type="primary" 
-                    icon={
-                      <IconWrapper>
-                        <IconUsers size={18} />
-                      </IconWrapper>
-                    } 
-                    className="w-full h-10 flex items-center justify-center"
-                    onClick={() => handleRegister(event)}
-                    disabled={
-                      event.status === 'past' || 
-                      event.currentParticipants >= event.maxParticipants ||
-                      hasUserRegistered(event)
-                    }
-                  >
-                    {event.status === 'past' ? 'Đã kết thúc' :
-                     event.currentParticipants >= event.maxParticipants ? 'Hết chỗ' :
-                     hasUserRegistered(event) ? 'Đã đăng ký' :
-                     'Đăng ký tham gia'}
-                  </Button>
-                  <div className="text-center text-sm text-gray-500 mt-2">
-                    {event.currentParticipants}/{event.maxParticipants} người tham gia
-                  </div>
-                </div>
-              </Card>
+                  <p className="text-gray-600 mb-6 line-clamp-3 flex-1">
+                    {event.description}
+                  </p>
+                </Card>
+              </Link>
             </motion.div>
           ))}
         </Grid>
