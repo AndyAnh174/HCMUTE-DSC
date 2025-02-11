@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button, Tag, Spin, Divider } from 'antd';
-import { IconCalendar, IconMapPin, IconBrandFacebook, IconLink } from '../utils/icons';
+import { IconCalendar, IconMapPin, IconBrandFacebook} from '../utils/icons';
 import Section from '../components/ui/Section';
 import { config } from '../config/env';
 import { getImageUrl } from '../utils/image';
@@ -18,7 +18,6 @@ interface Event {
   status: string;
   image: string;
   organizer: string;
-  googleFormUrl: string;
   isHighlight: boolean;
   facebookUrl: string;
 }
