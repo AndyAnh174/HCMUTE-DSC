@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import ProjectManagement from './pages/admin/ProjectManagement';
 import Documents from './pages/Documents';
 import DocumentManagement from './pages/admin/DocumentManagement';
+import EventDetail from './pages/EventDetail';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
               <Route path="/" element={<MainLayout><Home /></MainLayout>} />
               <Route path="/about" element={<MainLayout><About /></MainLayout>} />
               <Route path="/events" element={<MainLayout><Events /></MainLayout>} />
+              <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/projects" element={<MainLayout><Projects /></MainLayout>} />
               <Route path="/members" element={<MainLayout><Members /></MainLayout>} />
               <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />

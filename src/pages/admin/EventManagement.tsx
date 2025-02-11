@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Card, Table, Button, Modal, Form, Input, Select, DatePicker, TimePicker, InputNumber, message, Upload } from 'antd';
+import { Card, Table, Button, Modal, Form, Input, Select, DatePicker, TimePicker, InputNumber, message, Upload, Checkbox } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
 import dayjs from 'dayjs';
 import './EventManagement.css';
+import { IconBrandFacebook } from '@tabler/icons-react';
 
 const { confirm } = Modal;
 
@@ -17,9 +18,9 @@ interface Event {
   location: string;
   status: string;
   image: string;
-  maxParticipants: number;
-  currentParticipants: number;
   organizer: string;
+  isHighlight: boolean;
+  facebookUrl: string;
 }
 
 const EventManagement = () => {
@@ -74,22 +75,23 @@ const EventManagement = () => {
       }
 
       const formattedTime = `${startTime.format('HH:mm')} - ${endTime.format('HH:mm')}`;
-      console.log('Formatted time:', formattedTime);
-
+      
+      // Format lại dữ liệu trước khi gửi
       const eventData = {
         ...values,
-        date: values.date.format('YYYY-MM-DD'),
         time: formattedTime,
-        status: values.status || 'upcoming',
-        currentParticipants: editingEvent?.currentParticipants || 0
+        date: values.date.format('YYYY-MM-DD'),
+        isHighlight: values.isHighlight || false,
+        facebookUrl: values.facebookUrl || '',
+        status: values.status || 'upcoming'
       };
 
-      console.log('Processed event data:', eventData);
-      console.log('Sending request to:', url);
-      console.log('Method:', method);
+      // Xóa các trường không cần thiết
+      delete eventData.maxParticipants;
+      delete eventData.currentParticipants;
 
       const response = await fetch(url, {
-        method,
+        method: method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -97,33 +99,23 @@ const EventManagement = () => {
         body: JSON.stringify(eventData)
       });
 
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Response data:', data);
+      const result = await response.json();
 
-      if (!response.ok) {
-        console.error('Error response:', data);
-        throw new Error(data.message || 'Có lỗi xảy ra');
-      }
-
-      message.success(data.message);
-      setModalVisible(false);
-      form.resetFields();
-      fetchEvents();
-
-    } catch (error) {
-      console.error('Error submitting event:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        });
-        message.error('Có lỗi xảy ra khi lưu sự kiện: ' + error.message);
+      if (response.ok) {
+        message.success(
+          editingEvent 
+            ? 'Cập nhật sự kiện thành công!' 
+            : 'Thêm sự kiện mới thành công!'
+        );
+        setModalVisible(false);
+        form.resetFields();
+        fetchEvents();
       } else {
-        console.error('Unknown error:', error);
-        message.error('Có lỗi xảy ra khi lưu sự kiện');
+        throw new Error(result.message || 'Có lỗi xảy ra');
       }
+    } catch (error: any) {
+      console.error('Error submitting event:', error);
+      message.error('Không thể lưu sự kiện: ' + error.message);
     }
   };
 
@@ -249,11 +241,6 @@ const EventManagement = () => {
       ),
     },
     {
-      title: 'Số người tham gia',
-      key: 'participants',
-      render: (event: Event) => `${event.currentParticipants}/${event.maxParticipants}`,
-    },
-    {
       title: 'Thao tác',
       key: 'action',
       render: (_: any, event: Event) => (
@@ -303,9 +290,12 @@ const EventManagement = () => {
       </Card>
 
       <Modal
-        title={editingEvent ? "Sửa sự kiện" : "Thêm sự kiện mới"}
+        title={editingEvent ? 'Chỉnh sửa sự kiện' : 'Thêm sự kiện mới'}
         open={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        onCancel={() => {
+          setModalVisible(false);
+          form.resetFields();
+        }}
         footer={null}
         width={800}
       >
@@ -316,7 +306,8 @@ const EventManagement = () => {
           initialValues={{
             status: 'upcoming',
             maxParticipants: 100,
-            organizer: 'DSC UTE'
+            organizer: 'DSC UTE',
+            isHighlight: false
           }}
         >
           <Form.Item
@@ -403,14 +394,6 @@ const EventManagement = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              name="maxParticipants"
-              label="Số người tối đa"
-              rules={[{ required: true, message: 'Vui lòng nhập số người tối đa' }]}
-            >
-              <InputNumber min={1} className="w-full" />
-            </Form.Item>
-
-            <Form.Item
               name="organizer"
               label="Ban tổ chức"
               rules={[{ required: true, message: 'Vui lòng nhập ban tổ chức' }]}
@@ -420,11 +403,27 @@ const EventManagement = () => {
           </div>
 
           <Form.Item
-            name="googleFormUrl"
-            label="Link Google Form"
-            rules={[{ required: true, message: 'Vui lòng nhập link Google Form' }]}
+            name="facebookUrl"
+            label="Link Facebook"
+            rules={[
+              { 
+                required: false,
+                type: 'url',
+                message: 'Vui lòng nhập đúng định dạng URL Facebook' 
+              }
+            ]}
           >
-            <Input placeholder="https://forms.google.com/..." />
+            <Input 
+              placeholder="https://facebook.com/events/..." 
+              prefix={<IconBrandFacebook className="text-[#1877F2]" />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="isHighlight"
+            valuePropName="checked"
+          >
+            <Checkbox>Đánh dấu là sự kiện nổi bật</Checkbox>
           </Form.Item>
 
           <div className="flex justify-end space-x-4">
