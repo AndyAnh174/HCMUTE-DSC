@@ -131,7 +131,6 @@ const Events = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="min-h-screen">
@@ -337,7 +336,7 @@ const Events = () => {
           className="text-center"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Bạn muốn tổ chức sự kiện cùng DSC?
+            Bạn muốn tổ chức sự kiện cùng HCMUTE Developer Student Club?
           </h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
             Chúng tôi luôn sẵn sàng hợp tác để tổ chức các sự kiện công nghệ 

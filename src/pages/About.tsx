@@ -5,6 +5,7 @@ import Section, { SectionHeader } from '../components/ui/Section';
 import Grid from '../components/ui/Grid';
 import Timeline from '../components/ui/Timeline';
 import BannerSlider from '../components/BannerSlider';
+import useCountUp from '../hooks/useCountUp';
 import banner1 from '../assets/banner1.png';
 import banner2 from '../assets/banner2.png';
 import banner3 from '../assets/banner3.png';
@@ -96,7 +97,7 @@ const timelineItems = [
     achievements: [
       {
         title: 'OPEN DAY 2023',
-        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  “đại tiệc móc khóa” khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB.'
+        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  "đại tiệc móc khóa" khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB.'
       },
       {
         title: 'Workshop: "GIT&GITHUB"',
@@ -111,12 +112,12 @@ const timelineItems = [
         description: 'Nói về cách thức hoạt động của Blockchain và cách để tạo ra một dự án Blockchain.'
       },
       {
-        title: 'CUỘC THI HỌC THUẬT TRUYỀN THỐNG “MASTERING IT” 2023',
+        title: 'CUỘC THI HỌC THUẬT TRUYỀN THỐNG "MASTERING IT" 2023',
         description: 'Cuộc thi lập trình tìm ra những nhà phát triển công nghệ tốt nhất.'
       },
       {
         title: 'GDSC Summit Việt Nam 2023',
-        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  “đại tiệc móc khóa” khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB GDSC VN.'
+        description: 'Sự kiện đã thu hút các bạn học sinh từ nhiều trường khác nhau với  "đại tiệc móc khóa" khi tham gia các minigame, đặc biệt là game AI được lập trình bởi thành viên CLB GDSC VN.'
       },
       {
         title: 'Tuyển thành viên GEN 3',
@@ -135,7 +136,7 @@ const timelineItems = [
         description: 'Quyết định đổi tên thành CLB HCMUTE - Developer Student Clubs, lần này sẽ không phụ thuộc vào Google nữa mà sẽ cố gắng phát triển nhìu công nghệ hơn, cộng đồng lập trình viên tại trường ĐH SPKT TPHCM.'
       },
       {
-        title: 'CHƯƠNG TRÌNH: “GIT & GITHUB STUDY JAM”',
+        title: 'CHƯƠNG TRÌNH: "GIT & GITHUB STUDY JAM"',
         description: 'Tổ chức sự kiện về GIT&GITHUB, được học tập về GIT&GITHUB và tổ chức xây dựng ứng dụng nhận các giải thưởng hấp dẫn.'
       },
       {
@@ -186,9 +187,28 @@ const bannerImages = [
   banner3,
 ];
 
+const StatCard = ({ number, label }: { number: string; label: string }) => {
+  const endValue = parseInt(number);
+  const count = useCountUp(endValue);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="text-center p-8 bg-white rounded-xl shadow-lg"
+    >
+      <div className="text-4xl font-bold text-primary mb-2">{count}+</div>
+      <div className="text-gray-600">{label}</div>
+    </motion.div>
+  );
+};
+
 const About = () => {
   return (
     <div className="min-h-screen pt-16">
+
       {/* Hero Section */}
       <Section className="bg-gradient-to-b from-primary/5 to-transparent">
         <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -199,13 +219,13 @@ const About = () => {
             className="lg:w-1/2"
           >
             <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-              Về HCMUTE
+              Về Câu lạc bộ
               <br />
-              <span className="text-primary">Developer Student Clubs</span>
+              <span className="text-primary">Sinh viên Lập trình HCMUTE</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8">
               Chúng tôi là một cộng đồng sinh viên đam mê công nghệ, nơi các bạn có thể học hỏi, 
-              chia sẻ và phát triển cùng nhau. DSC HCM UTE được thành lập với sứ mệnh tạo ra một 
+              chia sẻ và phát triển cùng nhau. Câu lạc bộ Sinh viên Lập trình HCMUTE (HCMUTE Developer Student Club) được thành lập với sứ mệnh tạo ra một 
               môi trường học tập và thực hành lý tưởng cho sinh viên SPKT.
             </p>
           </motion.div>
@@ -224,7 +244,7 @@ const About = () => {
       <Section>
         <SectionHeader
           title="Giá Trị Cốt Lõi"
-          subtitle="Những giá trị định hình nên DSC HCM UTE"
+          subtitle="Những giá trị định hình nên HCMUTE Developer Student Club"
         />
         <Grid cols={4} gap={8}>
           {features.map((feature, index) => (
@@ -252,31 +272,20 @@ const About = () => {
       <Section>
         <SectionHeader
           title="Lịch Sử Phát Triển"
-          subtitle="Hành trình phát triển của DSC HCM UTE qua các năm"
+          subtitle="Hành trình phát triển của HCMUTE Developer Student Club qua các năm"
         />
         <Timeline items={timelineItems} className="mt-16" />
       </Section>
-
-      {/* Stats */}
+      {/* Stats Section  */}
       <Section className="bg-primary/5">
         <Grid cols={4} gap={8}>
           {[
-            { number: '100+', label: 'Thành viên' },
-            { number: '20+', label: 'Sự kiện đã tổ chức' },
-            { number: '10+', label: 'Dự án thực hiện' },
-            { number: '5+', label: 'Đối tác' },
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center p-8 bg-white rounded-xl shadow-lg"
-            >
-              <div className="text-4xl font-bold text-primary mb-2">{stat.number}</div>
-              <div className="text-gray-600">{stat.label}</div>
-            </motion.div>
+            { number: '100', label: 'Thành viên' },
+            { number: '20', label: 'Sự kiện đã tổ chức' },
+            { number: '10', label: 'Dự án thực hiện' },
+            { number: '5', label: 'Đối tác' },
+          ].map((stat) => (
+            <StatCard key={stat.label} {...stat} />
           ))}
         </Grid>
       </Section>

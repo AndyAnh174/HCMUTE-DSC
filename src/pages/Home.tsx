@@ -88,11 +88,10 @@ const Home = () => {
               >
                 <h1 className="text-4xl lg:text-5xl font-bold mb-6">
                   Chào mừng đến với {' '}
-                  <span className="text-[#EA4335]">HCM UTE Developer</span>
+                  <br />
+                  <span className="text-[#EA4335]">HCMUTE Developer</span>
                   <br />
                   <span className="text-[#EA4335]">Student Club</span>
-                  <br />
-                  <span className="text-[#EA4335]">(Câu lạc bộ Sinh viên Lập trình HCMUTE)</span>
                 </h1>
                 <p className="text-lg text-gray-600 mb-8">
                   Hãy tham gia cộng đồng của chúng tôi – nơi quy tụ những nhà phát triển đầy đam mê và những người yêu công nghệ!
@@ -104,15 +103,16 @@ const Home = () => {
                     size="large"
                     icon={<IconUsers className="w-5 h-5" />}
                     className="flex items-center"
+                    onClick={() => window.open('https://www.facebook.com/hcmute.dsc', '_blank')}
                   >
-                    <Link to="https://www.facebook.com/hcmute.dsc">Tham gia</Link>
+                    Tham gia
                   </Button>
                   <Button
                     size="large"
                     icon={<IconCode className="w-5 h-5" />}
                     className="flex items-center"
                   >
-                    <Link to="/projects">Dự án</Link>
+                    <Link to="/projects" onClick={() => window.scrollTo(0, 0)}>Dự án</Link>
                   </Button>
                 </div>
               </motion.div>
@@ -215,7 +215,7 @@ const Home = () => {
             Tham gia cộng đồng của chúng tôi ngay hôm nay và bắt đầu một hành trình 
             đầy thú vị với học tập, đổi mới và phát triển!
             </p>
-            <Button type="primary" size="large">
+            <Button type="primary" size="large" onClick={() => window.open('https://www.facebook.com/hcmute.dsc', '_blank')}>
               Bắt đầu ngay bây giờ
             </Button>
           </motion.div>

@@ -17,11 +17,15 @@ import Documents from './pages/Documents';
 import DocumentManagement from './pages/admin/DocumentManagement';
 import EventDetail from './pages/EventDetail';
 import ProjectDetail from './pages/ProjectDetail';
-
+import Loading from './components/Loading';
+import useLoading from './hooks/useLoading';
 
 function App() {
+  const { isLoading } = useLoading();
+
   return (
     <div className="min-h-screen bg-white">
+      {isLoading && <Loading />}
       <AuthProvider>
         <ConfigProvider
           theme={{

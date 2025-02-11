@@ -6,8 +6,7 @@ import {
   IconPhone,
   IconMapPin,
   IconBrandFacebook,
-  IconBrandGithub,
-  IconBrandLinkedin,
+  IconBrandGithub
 } from '../utils/icons';
 import Section from '../components/ui/Section';
 import axiosInstance from '../utils/axios';
@@ -152,18 +151,7 @@ const Contact = () => {
                       </IconWrapper>
                     }
                     href="https://github.com/hcmute-dsc"
-                    target="_blank"
-                  />
-                  <Button
-                    type="text"
-                    icon={
-                      <IconWrapper>
-                        <IconBrandLinkedin />
-                      </IconWrapper>
-                    }
-                    href="https://linkedin.com/company/hcmute-dsc"
-                    target="_blank"
-                  />
+                    target="_blank"                  />
                 </div>
               </div>
             </div>
@@ -213,6 +201,7 @@ const Contact = () => {
                     <Option value="event">Sự kiện</Option>
                     <Option value="project">Dự án</Option>
                     <Option value="membership">Thành viên</Option>
+                    <Option value="recruitment">Tài liệu</Option>
                     <Option value="other">Khác</Option>
                   </Select>
                 </Form.Item>
