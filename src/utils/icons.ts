@@ -29,6 +29,7 @@ const IconFolder = lazy(() => import('@tabler/icons-react').then(module => ({ de
 const IconDownload = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconDownload })));
 const IconUser = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconUser })));
 const IconLink = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconLink })));
+const IconArrowLeft = lazy(() => import('@tabler/icons-react').then(module => ({ default: module.IconArrowLeft })));
 // Log để debug
 console.log('Loading icons:', {
   IconHome2,
@@ -60,6 +61,7 @@ console.log('Loading icons:', {
   IconDownload,
   IconUser,
   IconLink,
+  IconArrowLeft,
 });
 
 export {
@@ -92,4 +94,5 @@ export {
   IconDownload,
   IconUser,
   IconLink,
+  IconArrowLeft,
 };
