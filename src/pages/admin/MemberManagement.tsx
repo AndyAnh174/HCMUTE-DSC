@@ -878,7 +878,7 @@ const MemberManagement = () => {
             rules={[{ required: true, message: 'Vui lòng chọn năm tham gia' }]}
           >
             <Select>
-              {Array.from({ length: 10 }, (_, i) => {
+              {Array.from({ length: 16 }, (_, i) => {
                 const year = new Date().getFullYear() - i;
                 return (
                   <Option key={year} value={year.toString()}>
