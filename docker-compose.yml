@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hcmute-dsc-frontend
+    restart: always
+    environment:
+      - VIRTUAL_HOST=dsc.fit.hcmute.edu.vn
+      - LETSENCRYPT_HOST=dsc.fit.hcmute.edu.vn
+      - LETSENCRYPT_EMAIL=your-email@example.com
+    networks:
+      - web
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    networks:
+      - web
+    depends_on:
+      - app
+
+  acme-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    restart: always
+    environment:
+      - DEFAULT_EMAIL=your-email@example.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - ./acme:/etc/acme.sh
+    depends_on:
+      - nginx-proxy
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge 

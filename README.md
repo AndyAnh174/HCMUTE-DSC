@@ -48,3 +48,66 @@ export default tseslint.config({
   },
 })
 ```
+
+# HCMUTE-DSC
+
+## Hướng dẫn triển khai với Docker
+
+### Yêu cầu
+
+- Docker và Docker Compose cài đặt trên máy chủ
+- Domain đã trỏ về IP của máy chủ (dsc.fit.hcmute.edu.vn)
+- Port 80 và 443 mở trên firewall
+
+### Chuẩn bị
+
+1. Chỉnh sửa thông tin email trong file Dockerfile và docker-compose.yml:
+   - Thay `your-email@example.com` bằng email thực của bạn
+
+### Triển khai
+
+1. Build và khởi chạy các container:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Kiểm tra trạng thái các container:
+   ```bash
+   docker-compose ps
+   ```
+
+3. Xem logs của các container:
+   ```bash
+   docker-compose logs -f
+   ```
+
+### Cấu trúc
+
+- **app**: Container chính chứa ứng dụng frontend đã được build
+- **nginx-proxy**: Proxy ngược tự động cấu hình dựa trên các container có biến môi trường VIRTUAL_HOST
+- **acme-companion**: Tự động tạo và gia hạn chứng chỉ SSL bằng Let's Encrypt
+
+### Thông tin khác
+
+- Backend API: https://apidsc.andyanh.id.vn
+- Frontend: https://dsc.fit.hcmute.edu.vn
+
+### Xử lý sự cố
+
+- Kiểm tra logs:
+  ```bash
+  docker-compose logs -f app
+  docker-compose logs -f nginx-proxy
+  docker-compose logs -f acme-companion
+  ```
+
+- Khởi động lại các container:
+  ```bash
+  docker-compose restart
+  ```
+
+- Xây dựng lại khi có cập nhật:
+  ```bash
+  docker-compose build --no-cache
+  docker-compose up -d
+  ```
