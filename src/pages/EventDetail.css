@@ -1,0 +1,183 @@
+.event-description {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Hỗ trợ căn chỉnh văn bản */
+.event-description .ql-align-center {
+  text-align: center;
+  margin: 0.3em 0;
+}
+
+.event-description .ql-align-right {
+  text-align: right;
+  margin: 0.3em 0;
+}
+
+.event-description .ql-align-justify {
+  text-align: justify;
+  margin: 0.3em 0;
+}
+
+/* Hỗ trợ emoji */
+.event-description .emoji {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.1em;
+  display: inline;
+  margin: 0;
+}
+
+/* Sửa lỗi các phần tử xuống dòng */
+.event-description p > span,
+.event-description p > img {
+  display: inline;
+}
+
+.event-description p {
+  margin-bottom: 1.25em;
+  display: block;
+}
+
+/* Đảm bảo không có phần tử nào tự xuống dòng không cần thiết */
+.event-description * {
+  display: inline-block;
+}
+
+.event-description p,
+.event-description h1,
+.event-description h2,
+.event-description h3,
+.event-description ul,
+.event-description ol,
+.event-description blockquote,
+.event-description pre {
+  display: block;
+  width: 100%;
+}
+
+.event-description h1,
+.event-description h2,
+.event-description h3,
+.event-description h4,
+.event-description h5,
+.event-description h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.event-description h1 {
+  font-size: 2rem;
+}
+
+.event-description h2 {
+  font-size: 1.75rem;
+}
+
+.event-description h3 {
+  font-size: 1.5rem;
+}
+
+.event-description h4 {
+  font-size: 1.25rem;
+}
+
+.event-description h5 {
+  font-size: 1rem;
+}
+
+.event-description h6 {
+  font-size: 0.75rem;
+}
+
+.event-description ul,
+.event-description ol {
+  margin-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.event-description li {
+  margin-bottom: 0.5em;
+}
+
+.event-description a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.event-description a:hover {
+  text-decoration: underline;
+}
+
+.event-description img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5em 0;
+}
+
+.event-description blockquote {
+  border-left: 4px solid #e2e8f0;
+  padding-left: 1em;
+  margin-left: 0;
+  color: #4a5568;
+}
+
+.event-description pre {
+  background-color: #f8fafc;
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.event-description code {
+  background-color: #f1f5f9;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+/* Fix lỗi icon bị xuống dòng */
+.event-description p img,
+.event-description p span,
+.event-description p .emoji {
+  display: inline !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+  float: none !important;
+  clear: none !important;
+}
+
+.event-description img.emoji {
+  height: 1em !important;
+  width: 1em !important;
+  margin: 0 0.05em 0 0.1em !important;
+  vertical-align: -0.1em !important;
+}
+
+/* Xóa tất cả khoảng cách trước và sau emoji */
+.event-description .emoji:before,
+.event-description .emoji:after {
+  content: "" !important;
+  display: none !important;
+  white-space: normal !important;
+}
+
+/* Điều chỉnh hiển thị cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .event-description h1 {
+    font-size: 1.75rem;
+  }
+  
+  .event-description h2 {
+    font-size: 1.5rem;
+  }
+  
+  .event-description h3 {
+    font-size: 1.25rem;
+  }
+} 

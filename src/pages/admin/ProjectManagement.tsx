@@ -3,6 +3,10 @@ import { Card, Table, Button, Modal, Form, Input, Select, InputNumber, Upload, m
 import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import { config } from '../../config/env';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'quill-emoji/dist/quill-emoji.css';
+import '../admin/EventManagement.css';
 
 interface Project {
   id: number;
@@ -35,6 +39,31 @@ const ProjectManagement = () => {
   const [imageUrl, setImageUrl] = useState<string>();
   const [uploading, setUploading] = useState(false);
 
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['link', 'image', 'emoji'],
+      ['clean']
+    ],
+    'emoji-toolbar': {
+      buttonIcon: '😀',
+      indicators: {
+        '1': {
+          icon: '😀'
+        },
+        '2': {
+          icon: '👍'
+        }
+      }
+    },
+    'emoji-textarea': false,
+    'emoji-shortname': true,
+  };
+
   const fetchProjects = async () => {
     try {
       setLoading(true);
@@ -56,6 +85,15 @@ const ProjectManagement = () => {
 
   useEffect(() => {
     fetchProjects();
+    import('quill-emoji').then(({ EmojiBlot, ShortNameEmoji, ToolbarEmoji, TextAreaEmoji }) => {
+      const Quill = ReactQuill.Quill;
+      Quill.register({
+        'formats/emoji': EmojiBlot,
+        'modules/emoji-toolbar': ToolbarEmoji,
+        'modules/emoji-textarea': TextAreaEmoji,
+        'modules/emoji-shortname': ShortNameEmoji
+      });
+    });
   }, []);
 
   const handleAdd = () => {
@@ -128,29 +166,28 @@ const ProjectManagement = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      console.log('Submitting project with values:', values);
-
-      const projectData = {
+      const technologies = Array.isArray(values.technologies) 
+        ? values.technologies 
+        : values.technologies.split(',').map((tech: string) => tech.trim());
+      
+      const formData = {
+        id: editingProject?.id,
         title: values.title,
         description: values.description,
         details: values.details,
         category: values.category,
-        image: imageUrl,
+        image: values.image,
         progress: values.progress,
         teamSize: values.teamSize,
-        technologies: values.technologies.split(',').map((t: string) => t.trim()),
+        technologies,
         links: {
           github: values.github,
-          demo: values.demo || ''
+          demo: values.demo,
         },
-        teamMembers: (values.teamMembers || []).map((member: { name: string; role: string; avatar: string; }) => ({
-          name: member.name,
-          role: member.role,
-          avatar: member.avatar
-        }))
+        teamMembers: values.teamMembers,
       };
 
-      console.log('Processed project data:', projectData);
+      console.log('Processed project data:', formData);
 
       const url = editingProject 
         ? `${config.apiUrl}/projects/${editingProject.id}`
@@ -166,7 +203,7 @@ const ProjectManagement = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(projectData)
+        body: JSON.stringify(formData)
       });
 
       console.log('Response status:', response.status);
@@ -340,7 +377,7 @@ const ProjectManagement = () => {
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
-        width={800}
+        width={1000}
       >
         <Form
           form={form}
@@ -357,18 +394,23 @@ const ProjectManagement = () => {
 
           <Form.Item
             name="description"
-            label="Mô tả ngắn"
+            label="Mô tả"
             rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
           >
-            <Input.TextArea rows={3} />
+            <Input.TextArea rows={4} />
           </Form.Item>
 
           <Form.Item
             name="details"
             label="Chi tiết dự án"
             rules={[{ required: true, message: 'Vui lòng nhập chi tiết dự án' }]}
+            className="mt-8 project-details-form-item"
           >
-            <Input.TextArea rows={5} />
+            <ReactQuill 
+              theme="snow" 
+              style={{ height: '350px', marginBottom: '60px' }}
+              modules={quillModules}
+            />
           </Form.Item>
 
           <Form.Item

@@ -7,6 +7,7 @@ import Grid from '../components/ui/Grid';
 import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
 import { Link } from 'react-router-dom';
+import './Projects.css';
 
 interface Project {
   id: number;
@@ -48,6 +49,25 @@ const getImageUrl = (path: string) => {
     return path;
   }
   return `${config.apiUrl}${path}`;
+};
+
+// Hàm để cắt HTML an toàn
+const truncateHtml = (html: string, maxLength: number): string => {
+  if (!html) return '';
+  
+  // Tạo một div tạm để phân tích chuỗi HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  
+  // Lấy văn bản thuần túy
+  const textContent = tempDiv.textContent || tempDiv.innerText || '';
+  
+  if (textContent.length <= maxLength) {
+    return html;
+  }
+  
+  // Nếu cần cắt, giữ nguyên HTML gốc và thêm '...' vào cuối
+  return html + '...';
 };
 
 const Projects = () => {
@@ -177,7 +197,12 @@ const Projects = () => {
                 <Link to={`/projects/${project.id}`}>
                   <Card.Meta
                     title={project.title}
-                    description={project.description}
+                    description={
+                      <div 
+                        className="project-description-preview" 
+                        dangerouslySetInnerHTML={{ __html: truncateHtml(project.description, 150) }}
+                      />
+                    }
                   />
                 </Link>
                 

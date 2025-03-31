@@ -8,6 +8,8 @@ import Tabs from '../components/ui/Tabs';
 import { config } from '../config/env';
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../utils/image';
+import { truncateHtml } from '../utils/text';
+import './Events.css';
 
 interface Event {
   id: number;
@@ -222,7 +224,12 @@ const Events = () => {
                     className="h-full hover:shadow-xl transition-all duration-300"
                   >
                     <h3 className="text-2xl font-semibold mb-4">{event.title}</h3>
-                    <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                    <div 
+                      className="text-gray-600 mb-4 line-clamp-2 event-description-preview"
+                      dangerouslySetInnerHTML={{ 
+                        __html: truncateHtml(event.description, 150)
+                      }}
+                    />
                     <div className="space-y-2">
                       <div className="flex items-center text-gray-600">
                         <IconCalendar size={18} className="mr-2 text-primary" />
@@ -310,9 +317,12 @@ const Events = () => {
                     </div>
                   </div>
 
-                  <p className="text-gray-600 mb-6 line-clamp-3 flex-1">
-                    {event.description}
-                  </p>
+                  <div 
+                    className="text-gray-600 mb-6 line-clamp-3 flex-1 event-description-preview"
+                    dangerouslySetInnerHTML={{ 
+                      __html: truncateHtml(event.description, 150)
+                    }}
+                  />
                 </Card>
               </Link>
             </motion.div>

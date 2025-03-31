@@ -6,6 +6,9 @@ import { config } from '../../config/env';
 import dayjs from 'dayjs';
 import './EventManagement.css';
 import { IconBrandFacebook } from '@tabler/icons-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'quill-emoji/dist/quill-emoji.css';
 
 const { confirm } = Modal;
 
@@ -33,6 +36,32 @@ const EventManagement = () => {
   const [imageUrl, setImageUrl] = useState<string>();
   const [uploading, setUploading] = useState(false);
 
+  // Cấu hình module cho ReactQuill với emoji
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['link', 'image', 'emoji'],
+      ['clean']
+    ],
+    'emoji-toolbar': {
+      buttonIcon: '😀',
+      indicators: {
+        '1': {
+          icon: '😀'
+        },
+        '2': {
+          icon: '👍'
+        }
+      }
+    },
+    'emoji-textarea': false,
+    'emoji-shortname': true,
+  };
+
   const fetchEvents = async () => {
     try {
       setLoading(true);
@@ -53,6 +82,17 @@ const EventManagement = () => {
   };
 
   useEffect(() => {
+    // Import thư viện emoji động khi component mount
+    import('quill-emoji').then(({ EmojiBlot, ShortNameEmoji, ToolbarEmoji, TextAreaEmoji }) => {
+      const Quill = ReactQuill.Quill;
+      Quill.register({
+        'formats/emoji': EmojiBlot,
+        'modules/emoji-toolbar': ToolbarEmoji,
+        'modules/emoji-textarea': TextAreaEmoji,
+        'modules/emoji-shortname': ShortNameEmoji
+      });
+    });
+    
     fetchEvents();
   }, []);
 
@@ -323,7 +363,11 @@ const EventManagement = () => {
             label="Mô tả"
             rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
           >
-            <Input.TextArea rows={4} />
+            <ReactQuill 
+              theme="snow" 
+              style={{ height: '200px', marginBottom: '50px' }}
+              modules={quillModules}
+            />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">

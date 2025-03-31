@@ -7,6 +7,7 @@ import Section from '../components/ui/Section';
 import { config } from '../config/env';
 import { getImageUrl } from '../utils/image';
 import Navbar from '../components/Navbar';
+import './EventDetail.css';
 
 interface Event {
   id: number;
@@ -147,14 +148,13 @@ const EventDetail = () => {
       {/* Chi tiết sự kiện */}
       <Section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8">
             <h2 className="text-2xl font-bold mb-6 text-gray-900">Chi tiết sự kiện</h2>
             <div className="prose max-w-none text-gray-700">
-              {event.description.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-4 text-base leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
+              <div 
+                dangerouslySetInnerHTML={{ __html: event.description }} 
+                className="event-description"
+              />
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ const EventDetail = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="max-w-2xl mx-auto"
+            className="max-w-5xl mx-auto"
           >
             <h2 className="text-2xl font-bold mb-4">Ban tổ chức</h2>
             <p className="text-lg">{event.organizer}</p>
