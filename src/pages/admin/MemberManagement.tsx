@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Card, Table, Button, Modal, Form, Input, Select, Tag, message, Avatar, Divider, Upload, Input as AntInput, Space } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, DownloadOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, DownloadOutlined, PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
 import type { RcFile } from 'antd/es/upload/interface';
 import { config } from '../../config/env';
@@ -28,6 +28,7 @@ interface Member {
     github: string;
     email: string;
   };
+  isPinned?: boolean;
 }
 
 interface ExportModalProps {
@@ -266,12 +267,10 @@ const MemberManagement = () => {
   const [filterStatus, setFilterStatus] = useState<string>('');
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+  const [pinLoading, setPinLoading] = useState<number | null>(null);
 
-  const currentLeader = members.find(
-    member => member.role === 'Leader CLB HCMUTEDSC' && member.year === '2024-2025'
-  );
-
-  const otherMembers = members.filter(m => m !== currentLeader);
+  const pinnedMember = members.find(member => member.isPinned);
+  const otherMembers = members.filter(member => !member.isPinned);
 
   const fetchMembers = async () => {
     try {
@@ -482,6 +481,60 @@ const MemberManagement = () => {
     }
   };
 
+  const handlePinMember = async (id: number) => {
+    try {
+      setPinLoading(id);
+      const response = await fetch(`${config.apiUrl}/members/pin/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.success('Ghim thành viên làm leader thành công');
+        await fetchMembers();
+      } else {
+        throw new Error(data.message || 'Không thể ghim thành viên');
+      }
+    } catch (error) {
+      console.error('Error pinning member:', error);
+      message.error(error instanceof Error ? error.message : 'Không thể kết nối đến server');
+    } finally {
+      setPinLoading(null);
+    }
+  };
+
+  const handleUnpinMember = async (id: number) => {
+    try {
+      setPinLoading(id);
+      const response = await fetch(`${config.apiUrl}/members/unpin/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.success('Bỏ ghim thành viên thành công');
+        await fetchMembers();
+      } else {
+        throw new Error(data.message || 'Không thể bỏ ghim thành viên');
+      }
+    } catch (error) {
+      console.error('Error unpinning member:', error);
+      message.error(error instanceof Error ? error.message : 'Không thể kết nối đến server');
+    } finally {
+      setPinLoading(null);
+    }
+  };
+
   const columns = [
     {
       title: 'Avatar',
@@ -550,6 +603,21 @@ const MemberManagement = () => {
             icon={<EditOutlined />}
             onClick={() => showEditModal(record)}
           />
+          {record.isPinned ? (
+            <Button 
+              type="text" 
+              icon={<PushpinFilled style={{ color: '#1890ff' }} />}
+              onClick={() => handleUnpinMember(record.id)}
+              loading={pinLoading === record.id}
+            />
+          ) : (
+            <Button 
+              type="text" 
+              icon={<PushpinOutlined />}
+              onClick={() => handlePinMember(record.id)}
+              loading={pinLoading === record.id}
+            />
+          )}
           <Button 
             type="text" 
             danger 
@@ -683,29 +751,38 @@ const MemberManagement = () => {
   return (
     <div className="space-y-6">
       {/* Leader Card */}
-      {currentLeader && (
+      {pinnedMember && (
         <Card 
-          title="Leader hiện tại"
+          title="Leader hiện tại (đã ghim)"
           className="bg-gradient-to-br from-primary/5 to-primary/10"
+          extra={
+            <Button 
+              icon={<PushpinFilled />}
+              onClick={() => handleUnpinMember(pinnedMember.id)}
+              loading={pinLoading === pinnedMember.id}
+            >
+              Bỏ ghim
+            </Button>
+          }
         >
           <div className="flex items-center gap-6">
-            <Avatar src={getImageUrl(currentLeader.avatar)} size={100} />
+            <Avatar src={getImageUrl(pinnedMember.avatar)} size={100} />
             <div>
-              <h3 className="text-xl font-semibold">{currentLeader.name}</h3>
-              <p className="text-primary">{currentLeader.role}</p>
-              <p className="text-gray-500">{currentLeader.department}</p>
-              <p className="text-gray-500">Tham gia từ: {currentLeader.joinYear}</p>
+              <h3 className="text-xl font-semibold">{pinnedMember.name}</h3>
+              <p className="text-primary">{pinnedMember.role}</p>
+              <p className="text-gray-500">{pinnedMember.department}</p>
+              <p className="text-gray-500">Tham gia từ: {pinnedMember.joinYear}</p>
               <div className="mt-2 space-y-2">
                 <div>
-                  {currentLeader.skills.map((skill, index) => (
+                  {pinnedMember.skills.map((skill, index) => (
                     <Tag key={index} className="mr-1">{skill}</Tag>
                   ))}
                 </div>
                 <div>
                   <Tag 
-                    color={currentLeader.status === 'active' ? 'green' : 'red'}
+                    color={pinnedMember.status === 'active' ? 'green' : 'red'}
                   >
-                    {currentLeader.status === 'active' ? 'Còn hoạt động' : 'Hết hoạt động'}
+                    {pinnedMember.status === 'active' ? 'Còn hoạt động' : 'Hết hoạt động'}
                   </Tag>
                 </div>
               </div>
@@ -714,7 +791,7 @@ const MemberManagement = () => {
               <Button 
                 type="primary" 
                 icon={<EditOutlined />}
-                onClick={() => showEditModal(currentLeader)}
+                onClick={() => showEditModal(pinnedMember)}
               >
                 Chỉnh sửa
               </Button>

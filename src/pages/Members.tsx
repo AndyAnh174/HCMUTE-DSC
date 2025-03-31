@@ -24,6 +24,7 @@ interface Member {
     github: string;
     email: string;
   };
+  isPinned?: boolean;
 }
 
 const tabs = [
@@ -259,13 +260,11 @@ const Members = () => {
     setSearchQuery(e.target.value);
   }, []);
 
-  const currentLeader = members.find(
-    member => member.role === 'Leader CLB HCMUTEDSC' && member.year === '2024-2025'
-  );
+  const pinnedLeader = members.find(member => member.isPinned);
 
   const getFilteredMembers = useCallback(() => {
     const sortedMembers = members
-      .filter(m => m !== currentLeader)
+      .filter(m => !m.isPinned)
       .sort((a, b) => {
         // Tạo hàm tính điểm ưu tiên
         const getPriorityScore = (member: Member) => {
@@ -302,7 +301,7 @@ const Members = () => {
       );
 
     return sortedMembers;
-  }, [members, currentLeader, activeTab, searchQuery]);
+  }, [members, activeTab, searchQuery]);
 
   const filteredMembers = getFilteredMembers();
 
@@ -349,9 +348,9 @@ const Members = () => {
         </motion.div>
       </div>
 
-      {currentLeader && (
+      {pinnedLeader && (
         <MemberCard
-          member={currentLeader}
+          member={pinnedLeader}
           index={0}
           isHero={true}
         />
