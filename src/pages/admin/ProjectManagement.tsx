@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, Table, Button, Modal, Form, Input, Select, InputNumber, Upload, message, Progress } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useAuth } from '../../hooks/useAuth';
@@ -28,6 +29,12 @@ interface Project {
     avatar: string;
   }>;
 }
+
+// Tạo wrapper component để giải quyết lỗi TypeScript
+const QuillEditor = React.memo((props: any) => (
+  // @ts-ignore
+  <ReactQuill {...props} />
+));
 
 const ProjectManagement = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -406,8 +413,8 @@ const ProjectManagement = () => {
             rules={[{ required: true, message: 'Vui lòng nhập chi tiết dự án' }]}
             className="mt-8 project-details-form-item"
           >
-            <ReactQuill 
-              theme="snow" 
+            <QuillEditor 
+              theme="snow"
               style={{ height: '350px', marginBottom: '60px' }}
               modules={quillModules}
             />
