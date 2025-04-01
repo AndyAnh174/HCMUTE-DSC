@@ -867,7 +867,7 @@ const MemberManagement = () => {
             rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
           >
             <Select>
-              <Option value="Leader CLB HCMUTEDSC">Leader CLB HCMUTEDSC</Option>
+              <Option value="Leader CLB HCMUTEDSC">Leader HCMUTE Developer Student Club</Option>
               <Option value="Leader Ban Học thuật">Leader Ban Học thuật</Option>
               <Option value="Leader Ban Sự kiện">Leader Ban Sự kiện</Option>
               <Option value="Leader Ban Truyền thông">Leader Ban Truyền thông</Option>
